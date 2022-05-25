@@ -9,10 +9,10 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 - Um animal tem os atributos nome, custo mensal e tipo.
 
 ### Regras
-Pessoas podem ter vários animais
-Pessoas devem ter mais de 18 anos para ter andorinhas
-Pessoas que tenham nome começando com a letra "A" não podem ter animais do tipo Gato
-Pessoas que já tiverem custos com animais acima de 1000 não podem ter mais animais
+- Pessoas podem ter vários animais
+- Pessoas devem ter mais de 18 anos para ter andorinhas
+- Pessoas que tenham nome começando com a letra "A" não podem ter animais do tipo Gato
+- Pessoas que já tiverem custos com animais acima de 1000 não podem ter mais animais
 
 ### Questões a serem respondidas
 - Qual é o custo médio dos animais do tipo cachorro?
