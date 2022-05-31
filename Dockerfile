@@ -1,8 +1,7 @@
 FROM node:16.15-alpine3.14
 
 # Create app directory
-RUN mkdir /app
-WORKDIR /app/
+WORKDIR /usr/src/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -19,10 +18,8 @@ RUN npm install
 
 RUN apk update && apk add bash
 
-RUN cd app
-
 ENV TZ America/Sao_Paulo
 EXPOSE 8080
 
-
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
+CMD ["bash"]
