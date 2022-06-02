@@ -20,3 +20,5 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 - Qual o nome dos donos dos cachorros (Array de nomes)
 - Retorne as pessoas ordenando pelo custo que elas tem com os animais (Maior para menor)
 - Levando em consideração o custo mensal, qual será o custo de 3 meses de cada pessoa?
+
+# Criação do banco
