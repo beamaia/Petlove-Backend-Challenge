@@ -94,7 +94,7 @@ def insert_animal_type(conn:psycopg2.extensions.connection):
     
     cur.close()
 
-def insert_service_type():
+def insert_service_type(conn:psycopg2.extensions.connection):
     # sophie
     pass
     
@@ -111,11 +111,11 @@ def insert_person(conn:psycopg2.extensions.connection):
 
     cur.close()
 
-def insert_animal():
+def insert_animal(conn:psycopg2.extensions.connection):
     # sophie
     pass
 
-def insert_schedule():
+def insert_schedule(conn:psycopg2.extensions.connection):
     # 
     pass
 
