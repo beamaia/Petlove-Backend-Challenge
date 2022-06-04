@@ -88,9 +88,12 @@ def insert_animal_type(conn:psycopg2.extensions.connection):
 
     for animal_aux in list(Animal.__members__):
         sql = f"INSERT INTO animalType (type) VALUES ('{animal_aux}')"
-        cur.execute(sql)
-        conn.commit()
-        sleep(0.1)
+        try:
+            cur.execute(sql)
+            conn.commit()
+        except psycopg2.errors.UniqueViolation as e:
+            print("Animal already exists..")
+        sleep(0.01)
     
     cur.close()
 
@@ -105,9 +108,12 @@ def insert_person(conn:psycopg2.extensions.connection):
 
     for i in range(PERSON_SIZE):
         person_sql = create_person()
-        cur.execute(person_sql)
-        conn.commit()
-        sleep(0.1)
+        try:
+            cur.execute(person_sql)
+            conn.commit()
+        except psycopg2.errors.UniqueViolation as e:
+            print("Person already exists..")
+        sleep(0.01)
 
     cur.close()
 
@@ -148,6 +154,7 @@ def select_random(curr, table_name, column_name):
     
 
 if __name__ == "__main__":
+    random.seed(10)
     Faker.seed(10)
 
     conn = psycopg2.connect(
