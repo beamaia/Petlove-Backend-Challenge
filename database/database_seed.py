@@ -149,7 +149,3 @@ if __name__ == "__main__":
     cur.close()    
     conn.commit()
     conn.close()
-
-    # test_animal = random.choice(list(Animal))
-    # print(test_animal.name)
-    # print(DB)
