@@ -9,6 +9,8 @@ services:
       context: .
     depends_on:
       - postgres
+    networks:
+      - trident-net
     ports:
       - "8080:8080"
     tty: true
@@ -35,3 +37,13 @@ services:
       - POSTGRES_USER=${DB_USER}
     ports:
       - "5432:5432"
+    networks:
+      - trident-net
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+
+networks:
+  trident-net:
+    driver: bridge
+volumes:
+  db-volume:
