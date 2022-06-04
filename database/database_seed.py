@@ -1,5 +1,6 @@
+from time import sleep
 import psycopg2
-import names
+from faker import Faker
 import random
 
 from animals import Animal
@@ -11,11 +12,11 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         cpf varchar(11) PRIMARY KEY,
                         full_name varchar(200),
                         data_birth date,
-                        postal_code varchar(8),
-                        road varchar(200),
                         number int,
-                        additional_info varchar(200),
-                        neighborhood varchar(200)
+                        road varchar(200),
+                        city varchar(100),
+                        postal_code varchar(8),
+                        phone varchar(20)
                         );"""
                         
     sql_animal_type = """CREATE TABLE animalType (
@@ -50,7 +51,59 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     cur.execute(sql_animal)
     cur.execute(sql_schedule)
 
+def create_person():
+    fake = Faker(['pt-BR'])
+
+    # Generate random information
+    cpf = str(random.randint(0, 100000000000))
+    birthday = fake.date_of_birth()
+    name = fake.name()
+    postal_code = fake.postcode()
+    road = fake.street_prefix() + ' ' + fake.street_name()
+    number = fake.building_number()
+    city = fake.city()
+    phone = fake.phone_number()
+
+    return f'INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ({cpf}, {name}, {birthday}, {number}, {road}, {city}, {postal_code}, {phone})'    
+
+def create_animal():
+    # bea
+    pass
+
+def create_schedule():
+    # 
+    pass
+
+def insert_animal_type():
+    # bea
+    pass
+
+def insert_service_type():
+    # sophie
+    pass
+    
+def insert_person():
+    # bea
+    pass
+
+def insert_animal():
+    # sophie
+    pass
+
+def insert_schedule():
+    # 
+    pass
+
+def select_random(curr, table_name, column_name):
+    sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
+    curr.execute(sql)
+    
+    return curr.fetchone()[0]
+    
+
 if __name__ == "__main__":
+    Faker.seed(10)
+
     conn = psycopg2.connect(
                     dbname=DB['name'],
                     user=DB['user'],
@@ -73,8 +126,9 @@ if __name__ == "__main__":
         cur.close()
         conn.close()
         quit()
-    
 
+    for i in range(15):
+        print(create_person(), end='\n\n')
     cur.close()    
     conn.commit()
     conn.close()
