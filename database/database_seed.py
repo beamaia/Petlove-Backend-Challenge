@@ -6,6 +6,8 @@ import random
 from animals import Animal
 from env import DB
 
+PERSON_SIZE = 100
+ANIMAL_SIZE = 300
 
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
@@ -15,7 +17,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         number int,
                         road varchar(200),
                         city varchar(100),
-                        postal_code varchar(8),
+                        postal_code varchar(9),
                         phone varchar(20)
                         );"""
                         
@@ -64,19 +66,26 @@ def create_person():
     city = fake.city()
     phone = fake.phone_number()
 
-    return f'INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ({cpf}, {name}, {birthday}, {number}, {road}, {city}, {postal_code}, {phone})'    
+    return f"INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')"    
 
-def create_animal():
-    # bea
-    pass
+def create_animal(cur:psycopg2.extensions.cursor):
+    fake = Faker(['pt-BR'])
+
+    person = select_random(cur, 'person', 'cpf')
+    animal_type = select_random(cur, 'animalType', 'id_type')
+    name = fake.name()
+    birthday = fake.date_of_birth(maximum_age=10)
+
+    return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', {birthday})"
 
 def create_schedule():
     # 
     pass
 
-def insert_animal_type():
-    # bea
-    pass
+def insert_animal_type(cur:psycopg2.extensions.cursor):
+    for animal_aux in list(Animal.__members__):
+        sql = f"INSERT INTO animalType (type) VALUES ('{animal_aux}')"
+        cur.execute(sql)
 
 def insert_service_type():
     # sophie
@@ -96,8 +105,9 @@ def insert_schedule():
 
 def select_random(curr, table_name, column_name):
     sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
+    print(sql)
     curr.execute(sql)
-    
+
     return curr.fetchone()[0]
     
 
@@ -115,11 +125,15 @@ if __name__ == "__main__":
     
     cur = conn.cursor()
     
-    # cur.execute("DROP TABLE test;")
     try:
-        create_tables(cur)
+        # Checks if table exists
+        cur.execute("select exists(select * from information_schema.tables where table_name=%s)", ('schedule',))
+        if not cur.fetchone()[0]:
+            create_tables(cur)
+
     except psycopg2.errors.DuplicateTable as e:
         print('Table already created')
+
     except Exception as e:
         print('Problem with connection, closing script...')
         print(e)
@@ -127,8 +141,14 @@ if __name__ == "__main__":
         conn.close()
         quit()
 
-    for i in range(15):
-        print(create_person(), end='\n\n')
+    insert_animal_type(cur)
+    # for i in range(15):
+    #     sql = create_animal(cur)
+    #     print(sql)
+    #     cur = conn.cursor()
+    #     cur.execute(sql)
+
+
     cur.close()    
     conn.commit()
     conn.close()
