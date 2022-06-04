@@ -8,6 +8,6 @@ DB = {
     "name": os.getenv("DB_NAME"),
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASS"),
-    "host": 't1-beatriz-sophie-postgres-1', #\
+    "host": 'postgres',
     "port": "5432",
 }
