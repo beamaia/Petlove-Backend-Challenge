@@ -6,7 +6,7 @@ import random
 from animals import Animal
 from env import DB
 
-PERSON_SIZE = 100
+PERSON_SIZE = 200
 ANIMAL_SIZE = 300
 
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
@@ -91,9 +91,11 @@ def insert_service_type():
     # sophie
     pass
     
-def insert_person():
-    # bea
-    pass
+def insert_person(cur:psycopg2.extensions.cursor):
+    # Creates PERSON_SIZE tuples
+    for i in range(PERSON_SIZE):
+        person_sql = create_person()
+        cur.execute(person_sql)
 
 def insert_animal():
     # sophie
@@ -141,13 +143,8 @@ if __name__ == "__main__":
         conn.close()
         quit()
 
+    insert_person(cur)
     insert_animal_type(cur)
-    # for i in range(15):
-    #     sql = create_animal(cur)
-    #     print(sql)
-    #     cur = conn.cursor()
-    #     cur.execute(sql)
-
 
     cur.close()    
     conn.commit()
