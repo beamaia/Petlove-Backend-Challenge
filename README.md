@@ -5,14 +5,16 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 ## Enunciado 
 ### Cenário: Você precisa escrever uma aplicação para gestão de animais.
 - Pessoas tem animais, e animais tem tipos.
-- Uma pessoa tem os atributos nome, documento e data de nascimento.
-- Um animal tem os atributos nome, custo mensal e tipo.
+- Uma pessoa tem os atributos nome, documento (CPF), data de nascimento, endereço com número, rua, cidade e CEP e telefone.
+- Um animal tem os atributos nome, dono, tipo, data de nascimento e ID único.
+- Um tipo de animal tem os atributo nome e ID único.
+- Um tipo de serviço tem os atributo nome e ID único.
+- Um horário reservardo tem os atributos animal, tipo de serviço, horário e ID único.
 
 ### Regras
 - Pessoas podem ter vários animais
-- Pessoas devem ter mais de 18 anos para ter andorinhas
-- Pessoas que tenham nome começando com a letra "A" não podem ter animais do tipo Gato
-- Pessoas que já tiverem custos com animais acima de 1000 não podem ter mais animais
+- CPFs não podem repetir
+- Um horário só pode ser ocupado por um tipo de serviço e animal.
 
 ### Questões a serem respondidas
 - Qual é o custo médio dos animais do tipo cachorro?
