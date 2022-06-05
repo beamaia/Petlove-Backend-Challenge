@@ -1,1 +1,0 @@
--- Script that creates and populates database

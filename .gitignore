@@ -1,2 +1,9 @@
+# Hidden files/directories
 .env
 .DS_Store
+
+# node stuff
+node_modules
+
+# python stuff
+*__pycache__
