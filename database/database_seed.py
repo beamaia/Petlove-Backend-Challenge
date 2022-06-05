@@ -4,10 +4,12 @@ from faker import Faker
 import random
 
 from animals import Animal
+from services import Services
 from env import DB
 
-PERSON_SIZE = 500
-ANIMAL_SIZE = 1000
+PERSON_SIZE = 100
+ANIMAL_SIZE = 150
+SCHEDULE_SIZE = 200
 
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
@@ -71,6 +73,7 @@ def create_person():
 def create_animal(cur:psycopg2.extensions.cursor):
     fake = Faker(['pt-BR'])
 
+    # Generate random person in the db and animal's info
     person = select_random(cur, 'person', 'cpf')
     animal_type = select_random(cur, 'animalType', 'id_type')
     name = fake.first_name()
@@ -78,27 +81,60 @@ def create_animal(cur:psycopg2.extensions.cursor):
 
     return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
-def create_schedule():
-    # 
-    pass
+def create_schedule(cur:psycopg2.extensions.cursor):
+    fake = Faker(['pt-BR'])
+
+    animal = select_random(cur, 'animal', 'id_animal')
+    service = select_random(cur, 'service', 'id_service')
+    date = fake.date_between(start_date='-1y', end_date='+1y')
+
+    return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date}')"
 
 def insert_animal_type(conn:psycopg2.extensions.connection):
+    # Inserts all animal's types registered
     cur = conn.cursor()
+
+    # if table has already been filled, doesnt fill it again
+    cur.execute("SELECT EXISTS(SELECT * from animalType)")
+    if cur.fetchone()[0]:
+        print('animalType table has already been filled...')
+        cur.close()
+        return
+
     print('Inserting values into animalType...')
 
     for animal_aux in list(Animal.__members__):
         sql = f"INSERT INTO animalType (type) VALUES ('{animal_aux}')"
         try:
             cur.execute(sql)
-            conn.commit()
         except psycopg2.errors.UniqueViolation as e:
             print("Animal already exists..")
         sleep(0.01)
     
     cur.close()
 
-def insert_service_type(conn:psycopg2.extensions.connection):
-    # sophie
+def insert_service(conn:psycopg2.extensions.connection):
+    # Inserts all services registered
+    cur = conn.cursor()
+
+    # if table has already been filled, doesnt fill it again
+    cur.execute("SELECT EXISTS(SELECT * from service)")
+    if cur.fetchone()[0]:
+        print('service table has already been filled...')
+        cur.close()
+        return
+
+    print('Inserting values into service...')
+
+    for service_aux in Services:
+        sql = f"INSERT INTO service (service_type, price) VALUES {service_aux['service'], service_aux['price']}"
+        try:
+            cur.execute(sql)
+        except psycopg2.errors.UniqueViolation as e:
+            print("Service already exists..")
+        sleep(0.01)
+    
+    cur.close()    
     pass
     
 def insert_person(conn:psycopg2.extensions.connection):
@@ -110,20 +146,39 @@ def insert_person(conn:psycopg2.extensions.connection):
         person_sql = create_person()
         try:
             cur.execute(person_sql)
-            conn.commit()
         except psycopg2.errors.UniqueViolation as e:
             print("Person already exists..")
         sleep(0.01)
 
     cur.close()
 
-def insert_animal(conn:psycopg2.extensions.connection):
-    # sophie
-    pass
+def insert_animal(conn:psycopg2.extensions.connection):    
+    # Insert into animal's table ANIMAL_SIZE tuples
+    cur = conn.cursor()
+    print('Inserting values into animal...')
+
+    for i in range(ANIMAL_SIZE):
+        animal_sql = create_animal(cur)
+        try:
+            cur.execute(animal_sql)
+        except psycopg2.errors.UniqueViolation as e:
+            print("Animal already exists..")
+        sleep(0.01)
+    cur.close()
 
 def insert_schedule(conn:psycopg2.extensions.connection):
-    # 
-    pass
+    # Insert into schedule's table SCHEDULE_SIZE tuples
+    cur = conn.cursor()
+    print('Inserting values into schedule...')
+
+    for i in range(SCHEDULE_SIZE):
+        schedule_sql = create_schedule(cur)
+        try:
+            cur.execute(schedule_sql)
+        except psycopg2.errors.UniqueViolation as e:
+            print("Schedule already exists..")
+        sleep(0.01)
+    cur.close()
 
 def insert_tables(conn:psycopg2.extensions.connection):
     cur = conn.cursor()
@@ -147,6 +202,7 @@ def insert_tables(conn:psycopg2.extensions.connection):
     cur.close()
 
 def select_random(curr, table_name, column_name):
+    # select a random value from a column's table
     sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
     curr.execute(sql)
 
@@ -154,8 +210,8 @@ def select_random(curr, table_name, column_name):
     
 
 if __name__ == "__main__":
-    random.seed(10)
-    Faker.seed(10)
+    random.seed(42)
+    Faker.seed(42)
 
     conn = psycopg2.connect(
                     dbname=DB['name'],
@@ -165,14 +221,18 @@ if __name__ == "__main__":
                     port=DB['port'],
                     options="-c search_path="+'public'
                     )
+    conn.set_session(autocommit=True)
+
     # Create tables
     insert_tables(conn)
 
     # Insert values
     insert_person(conn)
+    
     insert_animal_type(conn)
+    insert_service(conn)
+
     insert_animal(conn)
     insert_schedule(conn)
 
-    conn.commit()
     conn.close()
