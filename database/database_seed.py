@@ -83,14 +83,15 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
 
     return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
-def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, datetime]:
+def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     fake = Faker(['pt-BR'])
 
     animal = select_random(cur, 'animal', 'id_animal')
     service = select_random(cur, 'service', 'id_service')
-    date = fake.date_time_between(start_date='-1y', end_date='+1y')
+    date = fake.date_between(start_date='-1y', end_date='+1y')
+    time = f'{random.randint(8, 17) : 02d}:{random.randrange(0, 59, 15)}:00'
 
-    return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date}')", date
+    return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date} {time}')", f'{date} {time}'
 
 def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
     # Inserts all animal's types registered
@@ -98,7 +99,9 @@ def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
             cur.execute("SELECT EXISTS(SELECT * from animalType)")
-            if cur.fetchone()[0]:
+
+            test = cur.fetchone()
+            if test and test[0]:
                 print('animalType table has already been filled...')
                 cur.close()
                 return
@@ -119,7 +122,9 @@ def insert_service(conn:psycopg2.extensions.connection) -> None:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
             cur.execute("SELECT EXISTS(SELECT * from service)")
-            if cur.fetchone()[0]:
+
+            test = cur.fetchone()
+            if test and test[0]:
                 print('service table has already been filled...')
                 cur.close()
                 return
@@ -145,7 +150,9 @@ def insert_person(conn:psycopg2.extensions.connection) -> None:
                 try:
                     cpf_check = f"SELECT cpf FROM person WHERE cpf = '{cpf}'"
                     cur.execute(cpf_check)
-                    if cur.fetchone()[0]:
+
+                    test=cur.fetchone()
+                    if test and test[0]:
                         print(f'Person already exists...')
                         continue
 
@@ -179,7 +186,9 @@ def insert_schedule(conn:psycopg2.extensions.connection) -> None:
                 try:
                     hour_check = f"SELECT EXISTS(SELECT * from schedule WHERE date_service = '{date}')"
                     cur.execute(hour_check)
-                    if cur.fetchone()[0]:
+
+                    test = cur.fetchone()
+                    if test and test[0]:
                         print("Time slot occupied..")
                         continue
 
