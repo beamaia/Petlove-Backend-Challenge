@@ -13,6 +13,7 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 
 ### Regras
 - Pessoas podem ter vários animais
+- Animais só podem pertencer a uma pessoa
 - CPFs não podem repetir
 - Um horário só pode ser ocupado por um tipo de serviço e animal.
 
