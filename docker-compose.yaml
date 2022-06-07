@@ -28,6 +28,7 @@ services:
   app:
     depends_on:
       - postgres
+    restart: on-failure:5
     build: 
       dockerfile: Dockerfile
       context: .
