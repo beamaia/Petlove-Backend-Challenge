@@ -12,9 +12,10 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 - Um horário reservardo tem os atributos animal, tipo de serviço, horário e ID único.
 
 ### Regras
-- Pessoas podem ter vários animais
-- Animais só podem pertencer a uma pessoa
-- CPFs não podem repetir
+- Pessoas podem ter vários animais.
+- Animais só podem pertencer a uma pessoa.
+- Animais de uma mesma pessoa não podem ter nomes diferentes.
+- CPFs não podem repetir.
 - Um horário só pode ser ocupado por um tipo de serviço e animal.
 
 ### Questões a serem respondidas
