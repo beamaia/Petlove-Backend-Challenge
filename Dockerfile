@@ -30,4 +30,3 @@ EXPOSE 8080
 
 # CMD [ "npm", "start" ]
 ENTRYPOINT "./init.sh" && /bin/bash
-CMD [ "bash" ]
