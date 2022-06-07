@@ -25,10 +25,9 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 
 RUN pip install -r requirements.txt
 
-# RUN python database/database_seed.py
-
 ENV TZ America/Sao_Paulo
 EXPOSE 8080
 
 # CMD [ "npm", "start" ]
-CMD ["bash"]
+ENTRYPOINT "./init.sh" && /bin/bash
+CMD [ "bash" ]
