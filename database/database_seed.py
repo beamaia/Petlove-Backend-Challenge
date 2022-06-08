@@ -68,14 +68,9 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     cur.execute(sql_schedule)
 
 def create_person() -> tuple[str, str]:
-    """
-    Create a person with random info and the query to insert it into the Person's table:
-
-            Return:
-                `tuple[str, str]`: insert query, person's cpf
-    """
     fake = Faker(['pt-BR'])
 
+    # Generate random information
     cpf = str(random.randint(0, 100000000000))
     birthday = fake.date_of_birth()
     name = fake.name()
@@ -88,16 +83,9 @@ def create_person() -> tuple[str, str]:
     return f"INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
 
 def create_animal(cur:psycopg2.extensions.cursor) -> str:
-    """
-    Create an animal with random info and the query to insert it into the Animal's table:
-
-            Return:
-                `str`: insert query
-    """
-
     fake = Faker(['pt-BR'])
 
-    # Generate random person in the db
+    # Generate random person in the db and animal's info
     person = select_random(cur, 'person', 'cpf')
     animal_type = select_random(cur, 'animalType', 'id_type')
     name = fake.first_name()
