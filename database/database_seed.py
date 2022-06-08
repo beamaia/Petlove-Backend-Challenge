@@ -126,7 +126,14 @@ def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date} {time}')", f'{date} {time}'
 
 def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
-    # Inserts all animal's types registered
+    """
+    If not inserted, insert all registered animal's type into the AnimalType table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
@@ -149,7 +156,14 @@ def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
             
 def insert_service(conn:psycopg2.extensions.connection) -> None:
-    # Inserts all services registered
+    """
+    If not inserted, insert all registered services into the Service table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
@@ -172,7 +186,15 @@ def insert_service(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
     
 def insert_person(conn:psycopg2.extensions.connection) -> None:
-    # Creates PERSON_SIZE tuples
+    """
+    Create PERSON_SIZE random people and insert it into the Person table
+    as long as the cpf doesn't exist
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into person...')
@@ -194,7 +216,14 @@ def insert_person(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_animal(conn:psycopg2.extensions.connection) -> None:  
-    # Insert into animal's table ANIMAL_SIZE tuples
+    """
+    Create ANIMAL_SIZE random animals and insert it into the Animal table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into animal...')
@@ -208,7 +237,16 @@ def insert_animal(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_schedule(conn:psycopg2.extensions.connection) -> None:
-    # Insert into schedule's table SCHEDULE_SIZE tuples
+    """
+    Create SCHEDULE_SIZE random schedules and insert it into the Schedule table
+    as long as the time slot isn't busy
+
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into schedule...')
@@ -230,6 +268,14 @@ def insert_schedule(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_tables(conn:psycopg2.extensions.connection) -> None:
+    """
+    Create all tables of the bd, if it doen't exist
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
     
