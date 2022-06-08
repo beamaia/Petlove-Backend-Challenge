@@ -1,3 +1,4 @@
+# List of registered services
 Services = [{'service': 'Bath', 'price': 50}, 
             {'service': 'Grooming', 'price': 65},
             {'service': 'Appointment', 'price': 100},
