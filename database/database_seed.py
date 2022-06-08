@@ -14,16 +14,6 @@ ANIMAL_SIZE = 150
 SCHEDULE_SIZE = 200
 
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
-    """
-    Execute Querys to create the following tables:
-        Person, AnimalType, Animal, Service, Schedule
-
-            Parameter:
-                `cur` (psycopg2.extensions.cursor): cursor to execute querys
-            Return:
-                `None`
-    """
-
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
                         full_name varchar(200) NOT NULL,
