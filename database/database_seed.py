@@ -16,7 +16,7 @@ SCHEDULE_SIZE = 200
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
-                        full_name varchar(200),
+                        full_name varchar(200) NOT NULL,
                         data_birth date,
                         number int,
                         road varchar(200),
@@ -27,20 +27,20 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal_type = """CREATE TABLE animalType (
                         id_type SERIAL PRIMARY KEY,
-                        type varchar(200)
+                        type varchar(200) NOT NULL
                         );"""
                         
     sql_service = """CREATE TABLE service (
                         id_service SERIAL PRIMARY KEY,
-                        service_type varchar(50),
-                        price real
+                        service_type varchar(50) NOT NULL,
+                        price real NOT NULL
                         );"""
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
                         id_person varchar(11) REFERENCES person(cpf),
                         id_type int REFERENCES animalType(id_type),
-                        name varchar(200),
+                        name varchar(200) NOT NULL,
                         data_birth date
                         );"""
 
@@ -48,7 +48,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         id_schedule SERIAL PRIMARY KEY,
                         id_animal int REFERENCES animal(id_animal),
                         id_service int REFERENCES service(id_service),
-                        date_service timestamp
+                        date_service timestamp NOT NULL
                         );"""
 
     cur.execute(sql_person)
