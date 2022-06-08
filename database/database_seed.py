@@ -69,7 +69,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
 
 def create_person() -> tuple[str, str]:
     """
-    Create a person with random info and the query to insert it into the Person's table:
+    Create a person with random info and the query to insert it into the Person's table
 
             Return:
                 `tuple[str, str]`: insert query, person's cpf
@@ -89,8 +89,9 @@ def create_person() -> tuple[str, str]:
 
 def create_animal(cur:psycopg2.extensions.cursor) -> str:
     """
-    Create an animal with random info and the query to insert it into the Animal's table:
-
+    Create an animal with random info and the query to insert it into the Animal's table
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
             Return:
                 `str`: insert query
     """
@@ -106,8 +107,17 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
     return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
 def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
+    """
+    Create a schedule with random info and the query to insert it into the Schedule's table
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
+            Return:
+                `tuple[str, str]`: insert query, scheduled time
+    """
+
     fake = Faker(['pt-BR'])
 
+    # Generate random animal and service from the db
     animal = select_random(cur, 'animal', 'id_animal')
     service = select_random(cur, 'service', 'id_service')
     date = fake.date_between(start_date='-1y', end_date='+1y')
@@ -241,7 +251,15 @@ def insert_tables(conn:psycopg2.extensions.connection) -> None:
             
 
 def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:str) -> str:
-    # select a random value from a column's table
+    """
+    Select an attribute of a random tuple from the db
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
+                `table_name` (str)
+                `column_name` (str)
+            Return:
+                `str`: value from the table
+    """
     sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
     curr.execute(sql)
 
@@ -252,6 +270,7 @@ if __name__ == "__main__":
     random.seed(42)
     Faker.seed(42)
 
+    # connects to the bd
     conn = psycopg2.connect(
                     dbname=DB['name'],
                     user=DB['user'],
