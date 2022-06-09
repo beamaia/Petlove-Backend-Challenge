@@ -38,16 +38,16 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
-                        id_person varchar(11) REFERENCES person(cpf),
-                        id_type int REFERENCES animalType(id_type),
+                        id_person varchar(11) REFERENCES person(cpf) NOT NULL,
+                        id_type int REFERENCES animalType(id_type) NOT NULL,
                         name varchar(200) NOT NULL,
                         data_birth date
                         );"""
 
     sql_schedule = """CREATE TABLE schedule (
                         id_schedule SERIAL PRIMARY KEY,
-                        id_animal int REFERENCES animal(id_animal),
-                        id_service int REFERENCES service(id_service),
+                        id_animal int REFERENCES animal(id_animal) NOT NULL,
+                        id_service int REFERENCES service(id_service) NOT NULL,
                         date_service timestamp NOT NULL
                         );"""
 
