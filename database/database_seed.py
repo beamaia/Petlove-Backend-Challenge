@@ -14,16 +14,6 @@ ANIMAL_SIZE = 150
 SCHEDULE_SIZE = 200
 
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
-    """
-    Execute Querys to create the following tables:
-        Person, AnimalType, Animal, Service, Schedule
-
-            Parameter:
-                `cur` (psycopg2.extensions.cursor): cursor to execute querys
-            Return:
-                `None`
-    """
-
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
                         full_name varchar(200) NOT NULL,
@@ -48,16 +38,16 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
-                        id_person varchar(11) REFERENCES person(cpf),
-                        id_type int REFERENCES animalType(id_type),
+                        id_person varchar(11) REFERENCES person(cpf) NOT NULL,
+                        id_type int REFERENCES animalType(id_type) NOT NULL,
                         name varchar(200) NOT NULL,
                         data_birth date
                         );"""
 
     sql_schedule = """CREATE TABLE schedule (
                         id_schedule SERIAL PRIMARY KEY,
-                        id_animal int REFERENCES animal(id_animal),
-                        id_service int REFERENCES service(id_service),
+                        id_animal int REFERENCES animal(id_animal) NOT NULL,
+                        id_service int REFERENCES service(id_service) NOT NULL,
                         date_service timestamp NOT NULL
                         );"""
 
@@ -76,6 +66,7 @@ def create_person() -> tuple[str, str]:
     """
     fake = Faker(['pt-BR'])
 
+    # Generate random information
     cpf = str(random.randint(0, 100000000000))
     birthday = fake.date_of_birth()
     name = fake.name()
@@ -98,7 +89,7 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
 
     fake = Faker(['pt-BR'])
 
-    # Generate random person in the db
+    # Generate random person in the db and animal's info
     person = select_random(cur, 'person', 'cpf')
     animal_type = select_random(cur, 'animalType', 'id_type')
     name = fake.first_name()
