@@ -1,5 +1,6 @@
 from enum import Enum
 
+# List of registered animal type
 class Animal(Enum):
     # Reptiles
     Lizard = 'Lizard'

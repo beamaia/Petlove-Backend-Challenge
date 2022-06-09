@@ -58,6 +58,12 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     cur.execute(sql_schedule)
 
 def create_person() -> tuple[str, str]:
+    """
+    Create a person with random info and the query to insert it into the Person's table
+
+            Return:
+                `tuple[str, str]`: insert query, person's cpf
+    """
     fake = Faker(['pt-BR'])
 
     # Generate random information
@@ -73,6 +79,14 @@ def create_person() -> tuple[str, str]:
     return f"INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
 
 def create_animal(cur:psycopg2.extensions.cursor) -> str:
+    """
+    Create an animal with random info and the query to insert it into the Animal's table
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
+            Return:
+                `str`: insert query
+    """
+
     fake = Faker(['pt-BR'])
 
     # Generate random person in the db and animal's info
@@ -84,8 +98,17 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
     return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
 def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
+    """
+    Create a schedule with random info and the query to insert it into the Schedule's table
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
+            Return:
+                `tuple[str, str]`: insert query, scheduled time
+    """
+
     fake = Faker(['pt-BR'])
 
+    # Generate random animal and service from the db
     animal = select_random(cur, 'animal', 'id_animal')
     service = select_random(cur, 'service', 'id_service')
     date = fake.date_between(start_date='-1y', end_date='+1y')
@@ -94,7 +117,14 @@ def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date} {time}')", f'{date} {time}'
 
 def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
-    # Inserts all animal's types registered
+    """
+    If not inserted, insert all registered animal's type into the AnimalType table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
@@ -117,7 +147,14 @@ def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
             
 def insert_service(conn:psycopg2.extensions.connection) -> None:
-    # Inserts all services registered
+    """
+    If not inserted, insert all registered services into the Service table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             # if table has already been filled, doesnt fill it again
@@ -140,7 +177,15 @@ def insert_service(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
     
 def insert_person(conn:psycopg2.extensions.connection) -> None:
-    # Creates PERSON_SIZE tuples
+    """
+    Create PERSON_SIZE random people and insert it into the Person table
+    as long as the cpf doesn't exist
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into person...')
@@ -162,7 +207,14 @@ def insert_person(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_animal(conn:psycopg2.extensions.connection) -> None:  
-    # Insert into animal's table ANIMAL_SIZE tuples
+    """
+    Create ANIMAL_SIZE random animals and insert it into the Animal table
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into animal...')
@@ -176,7 +228,16 @@ def insert_animal(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_schedule(conn:psycopg2.extensions.connection) -> None:
-    # Insert into schedule's table SCHEDULE_SIZE tuples
+    """
+    Create SCHEDULE_SIZE random schedules and insert it into the Schedule table
+    as long as the time slot isn't busy
+
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
             print('Inserting values into schedule...')
@@ -198,6 +259,14 @@ def insert_schedule(conn:psycopg2.extensions.connection) -> None:
                 sleep(0.01)
 
 def insert_tables(conn:psycopg2.extensions.connection) -> None:
+    """
+    Create all tables of the bd, if it doen't exist
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+
     with conn:
         with conn.cursor() as cur:
     
@@ -219,7 +288,15 @@ def insert_tables(conn:psycopg2.extensions.connection) -> None:
             
 
 def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:str) -> str:
-    # select a random value from a column's table
+    """
+    Select an attribute of a random tuple from the db
+            Parameter:
+                `cur` (psycopg2.extensions.cursor): cursor to execute querys
+                `table_name` (str)
+                `column_name` (str)
+            Return:
+                `str`: value from the table
+    """
     sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
     curr.execute(sql)
 
@@ -230,6 +307,7 @@ if __name__ == "__main__":
     random.seed(42)
     Faker.seed(42)
 
+    # connects to the bd
     conn = psycopg2.connect(
                     dbname=DB['name'],
                     user=DB['user'],
