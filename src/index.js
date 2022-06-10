@@ -1,4 +1,6 @@
-const db = require('./db');
-const { query } = require('express');
+const app = require('./config/customExpress')
 
-console.log(db.query('SHOW DATABASE'))
+
+app.listen(8080, () => {
+    console.log('Servidor online na porta', 8080);
+})
