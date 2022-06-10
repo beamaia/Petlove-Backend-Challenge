@@ -25,8 +25,11 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 
 RUN pip install -r requirements.txt
 
+RUN chmod +x init.sh
+
 ENV TZ America/Sao_Paulo
 EXPOSE 8080
 
 # CMD [ "npm", "start" ]
-ENTRYPOINT "./init.sh" && /bin/bash
+# ENTRYPOINT ["sh", "init.sh", "&&", "bash"]
+CMD ["bash"]
