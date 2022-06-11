@@ -43,6 +43,43 @@ class Person {
             }
         })
     }
+    
+    
+    /**
+     * Returns a specific person's pets from database
+     * @param {*} req request containing person's id
+     * @param {*} res 
+     */
+    getPets(req, res) {
+            let id = req.params.id
+            if (isNaN(id)) {
+                res.status(400).json("Invalid Id");
+            }
+
+            // First see if person exists
+            const sql = `SELECT * FROM Person WHERE cpf='${id}'`
+
+            db.query(sql, (error, results) => {
+                if(error) {
+                    res.status(400).json(error);
+                } else if (!results.rowCount) {
+                    res.status(204).json(`There is no person with cpf as ${id}`);
+                } else {
+                    // If it does, the search for pets
+                    const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
+                    
+                    db.query(sql, (error, results) => {
+                        if(error) {
+                            res.status(400).json(error);
+                        } else if (!results.rowCount) {
+                            res.status(204).json(`The person with cpf as ${id} has no pet`);
+                        } else {
+                            res.status(200).json(results.rows);
+                        }
+                    })
+                }
+            })
+        }
 }
 
 module.exports = new Person
