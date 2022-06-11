@@ -1,5 +1,4 @@
-const db = require('../database/db')
-const aux = require('../aux/aux')
+const db = require('../database/db');
 
 
 class Person {
@@ -9,7 +8,7 @@ class Person {
      * @param {*} res
      */
     getAll(req, res) {
-        const sql = `SELECT * FROM Person`
+        const sql = `SELECT * FROM Person;`;
 
         db.query(sql, (error, results) => {
             if(error) {
@@ -29,18 +28,18 @@ class Person {
         let id = req.params.id
 
         if (isNaN(id)) {
-            return res.status(400).json("Invalid Id")
+            return res.status(400).json("Invalid Id");
         }
 
         const sql = `SELECT * FROM Person WHERE cpf='${id}'`
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`)
+                res.status(204).json(`There is no person with cpf as ${id}`);
             } else {
-                res.status(200).json(results.rows)
+                res.status(200).json(results.rows);
             }
         })
     }
@@ -54,7 +53,7 @@ class Person {
     getPets(req, res) {
             let id = req.params.id
             if (isNaN(id)) {
-                res.status(400).json("Invalid Id")
+                res.status(400).json("Invalid Id");
             }
 
             // First see if person exists
@@ -62,20 +61,20 @@ class Person {
 
             db.query(sql, (error, results) => {
                 if(error) {
-                    res.status(400).json(error)
+                    res.status(400).json(error);
                 } else if (!results.rowCount) {
-                    res.status(204).json(`There is no person with cpf as ${id}`)
+                    res.status(204).json(`There is no person with cpf as ${id}`);
                 } else {
                     // If it does, the search for pets
                     const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
                     
                     db.query(sql, (error, results) => {
                         if(error) {
-                            res.status(400).json(error)
+                            res.status(400).json(error);
                         } else if (!results.rowCount) {
-                            res.status(204).json(`The person with cpf as ${id} has no pet`)
+                            res.status(204).json(`The person with cpf as ${id} has no pet`);
                         } else {
-                            res.status(200).json(results.rows)
+                            res.status(200).json(results.rows);
                         }
                     })
                 }
