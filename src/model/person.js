@@ -80,6 +80,36 @@ class Person {
                 }
             })
         }
+
+    /**
+     * Adds a new person to database
+     * @param {*} req request containing person's data
+     * @param {*} res 
+     */
+    create(req, res) {
+        let data = req.body
+
+        console.log(data)
+
+        // Checking constraints
+        if (aux.getCountOfDigits(data.cpf) != 11) {
+            return res.status(400).json("Invalid CPF")
+        } else if (data.postal_code && aux.getCountOfDigits(data.postal_code) != 8) {
+            return res.status(400).json("Invalid postal code")
+        } else if (data.data_birth && (aux.getAge(data.data_birth) < 18 || aux.getAge(data.data_birth) > 140)) {
+            return res.status(400).json("Invalid birth date")
+        }
+
+        const sql = `INSERT INTO Person VALUES ('${data.cpf}', '${data.full_name}', '${data.data_birth}', '${data.number}', '${data.road}', '${data.city}', '${data.postal_code}', '${data.phone}')`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else {
+                res.status(201).json(data)
+            }
+        })          
+    }    
 }
 
 module.exports = new Person
