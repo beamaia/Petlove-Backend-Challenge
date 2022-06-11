@@ -95,9 +95,9 @@ class Person {
         // Checking constraints
         if (aux.getCountOfDigits(data.cpf) != 11) {
             return res.status(400).json("Invalid CPF")
-        } else if (aux.getCountOfDigits(data.postal_code) != 8) {
+        } else if (data.postal_code && aux.getCountOfDigits(data.postal_code) != 8) {
             return res.status(400).json("Invalid postal code")
-        } else if (aux.getAge(data.data_birth) < 18 || aux.getAge(data.data_birth) > 140) {
+        } else if (data.data_birth && (aux.getAge(data.data_birth) < 18 || aux.getAge(data.data_birth) > 140)) {
             return res.status(400).json("Invalid birth date")
         }
 
