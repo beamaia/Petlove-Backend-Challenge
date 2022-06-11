@@ -3,6 +3,9 @@ const router = express.Router()
 
 const Person = require('../model/Person')
 
+// Adds a new person
+router.post('/person', Person.create)
+
 // Returns all persons from database
 router.get('/person', Person.getAll)
 
