@@ -12,4 +12,13 @@ router.get('/person/:id', Person.get)
 // Returns a specific person's pets from database
 router.get('/person/:id/animal', Person.getPets)
 
+// Returns a specific person's pets schedule from database
+router.get('/person/:id/schedule', function (req, res) {
+    Person.getSchedule(req, res, 'today')
+})
+
+router.get('/person/:id/scheduleHistory', function (req, res) {
+    Person.getSchedule(req, res, 'history')
+})
+
 module.exports = router
