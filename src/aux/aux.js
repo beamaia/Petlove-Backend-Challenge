@@ -1,7 +1,15 @@
+/** 
+ * Returns the number of digits in a string 
+ * @param {string} str
+ **/ 
 function getCountOfDigits(str) {
     return str.replace(/[^0-9]/g, '').length;
 }
 
+/** 
+ * Returns the age of a person based on his birth date
+ * @param {string} birthDate
+ **/ 
 function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);
