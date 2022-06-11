@@ -10,6 +10,6 @@ router.get('/person', Person.getAll)
 router.get('/person/:id', Person.get)
 
 // Returns a specific person's pets from database
-router.get('/person/:id/animal', Person.getPets.bind(Person))
+router.get('/person/:id/animal', Person.getPets)
 
 module.exports = router
