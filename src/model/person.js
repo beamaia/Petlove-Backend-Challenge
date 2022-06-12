@@ -182,6 +182,11 @@ class Person {
         })
     }
 
+    /**
+     * Deletes a person from database
+     * @param {*} req request containing person's id
+     * @param {*} res
+     **/ 
     delete(req, res) {
         let id = req.params.id
 
