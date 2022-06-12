@@ -24,7 +24,6 @@ class Schedule {
 
         let sql = `INSERT INTO Schedule (${fields_atr.join(',')}) VALUES (${fields_val.join(', ')}) RETURNING *`
 
-        console.log(sql)
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error)
