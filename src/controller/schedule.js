@@ -16,4 +16,7 @@ router.get('/schedule', function (req, res) {
     Schedule.get(req, res, 'today')
 })
 
+// Updates a schedule
+router.patch('/schedule/:id', Schedule.update)
+
 module.exports = router
