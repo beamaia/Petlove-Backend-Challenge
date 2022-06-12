@@ -2,9 +2,6 @@ const db = require('../database/db');
 const aux = require('../aux/aux');
 
 class Person {
-    constructor() {
-        this.attributes = ['cpf', 'full_name', 'data_birth', 'number', 'road', 'city', 'postal_code', 'phone']
-    }
     /**
      * Returns all persons from database
      * @param {*} req
@@ -98,9 +95,6 @@ class Person {
         let fields_atr = []
         let fields_val = []
         for (let key in data) {
-            if (!(this.attributes.includes(key))) {
-                return res.status(400).json(`Invalid field ${key}`)
-            } 
             if (key == 'cpf') {
                 if (!data.cpf || aux.getCountOfDigits(data.cpf) != 11) {
                     return res.status(400).json("Invalid CPF")
@@ -157,10 +151,7 @@ class Person {
         for (let key in data) {
             if (key == 'cpf') {
                 return res.status(400).json('CPF cannot be changed')
-            } else if (!(this.attributes.includes(key))) {
-                return res.status(400).json(`Invalid field ${key}`)
-            }
-            else {
+            } else {
                 if (data[key]) {
                     fields.push(`${key}='${data[key]}'`)
                 } else {
