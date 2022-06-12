@@ -35,22 +35,23 @@ class Schedule {
     }
 
     /**
-     * Returns a specific person's pets from database
-     * @param {*} req request containing person's id
+     * Returns the schedule based on the date
+     * @param {*} req 
      * @param {*} res 
+     * @param {*} date can be 'history' or 'today' 
      */
-     get(req, res, data) {
+     get(req, res, date) {
         // Find period of schedule
         let sql;
 
-        if (data == 'today') {
+        if (date == 'today') {
             sql = `SELECT * FROM Schedule WHERE date_service >= (SELECT NOW())`
         }
-        else if (data == 'history') {
+        else if (date == 'history') {
             sql = `SELECT * FROM Schedule WHERE date_service < (SELECT NOW())`
         }
         else {
-            res.status(400).json("Invalid data");
+            res.status(400).json("Invalid date");
         }
         
         db.query(sql, (error, results) => {
@@ -63,6 +64,52 @@ class Schedule {
             }
         })                                
     }    
+
+    /**
+     * Updates a schedule
+     * @param {*} req request containing schedule's id
+     * @param {*} res
+     **/
+    update(req, res) {
+        let data = req.body
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+
+        // Creates auxiliary list of fields to be updated
+        let fields = []
+        for (let key in data) {
+            if (key == 'id_schedule') {
+                return res.status(400).json('Id cannot be changed')
+            } else if (key == 'id_animal') {
+                return res.status(400).json('Pet cannot be changed, create a new schedule!')
+            } else if (key == 'id_service') {
+                return res.status(400).json('Service cannot be changed, create a new schedule!')
+            } else if (key == 'id_person') {
+                return res.status(400).json('Person cannot be changed, create a new schedule!')
+            }
+            
+            if (data[key]) {
+                fields.push(`${key}='${data[key]}'`)
+            } else {
+                return res.status(400).json(`${key} cannot be empty`)
+            }
+        }
+
+        const sql = `UPDATE Schedule SET ${fields.join(', ')} WHERE id_schedule='${id}' RETURNING *`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no schedule with id as ${id}`)
+            } else {
+                res.status(200).json(results.rows)
+            }
+        })
+    }
 }
 
 module.exports = new Schedule
