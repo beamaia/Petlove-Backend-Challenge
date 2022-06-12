@@ -33,6 +33,36 @@ class Schedule {
             }
         })
     }
+
+    /**
+     * Returns a specific person's pets from database
+     * @param {*} req request containing person's id
+     * @param {*} res 
+     */
+     get(req, res, data) {
+        // Find period of schedule
+        let sql;
+
+        if (data == 'today') {
+            sql = `SELECT * FROM Schedule WHERE date_service >= (SELECT NOW())`
+        }
+        else if (data == 'history') {
+            sql = `SELECT * FROM Schedule WHERE date_service < (SELECT NOW())`
+        }
+        else {
+            res.status(400).json("Invalid data");
+        }
+        
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error);
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no schedule :(`);
+            } else {
+                res.status(200).json(results.rows);
+            }
+        })                                
+    }    
 }
 
 module.exports = new Schedule
