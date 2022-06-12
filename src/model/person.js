@@ -181,6 +181,31 @@ class Person {
             }
         })
     }
+
+    /**
+     * Deletes a person from database
+     * @param {*} req request containing person's id
+     * @param {*} res
+     **/ 
+    delete(req, res) {
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+
+        const sql = `DELETE FROM Person WHERE cpf='${id}'`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no person with cpf as ${id}`)
+            } else {
+                res.status(200).json(results)
+            }
+        })
+    }
 }
 
 module.exports = new Person
