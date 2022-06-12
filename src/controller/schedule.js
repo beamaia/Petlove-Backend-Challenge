@@ -19,4 +19,7 @@ router.get('/schedule', function (req, res) {
 // Updates a schedule
 router.patch('/schedule/:id', Schedule.update)
 
+// Deletes a schedule
+router.delete('/schedule/:id', Schedule.delete)
+
 module.exports = router

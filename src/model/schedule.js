@@ -109,6 +109,32 @@ class Schedule {
             }
         })
     }
+
+    /**
+     * Deletes a schedule from database
+     * @param {*} req request containing schedule's id
+     * @param {*} res
+    **/ 
+    delete(req, res) {
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+
+        const sql = `DELETE FROM Schedule WHERE id_schedule='${id}' RETURNING *`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no schedule with id as ${id}`)
+            }
+            else {
+                res.status(200).json(results.rows)
+            }
+        })
+    }
 }
 
 module.exports = new Schedule
