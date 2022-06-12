@@ -83,11 +83,18 @@ class Schedule {
         for (let key in data) {
             if (key == 'id_schedule') {
                 return res.status(400).json('Id cannot be changed')
+            } else if (key == 'id_animal') {
+                return res.status(400).json('Pet cannot be changed, create a new schedule!')
+            } else if (key == 'id_service') {
+                return res.status(400).json('Service cannot be changed, create a new schedule!')
+            } else if (key == 'id_person') {
+                return res.status(400).json('Person cannot be changed, create a new schedule!')
             }
+            
             if (data[key]) {
                 fields.push(`${key}='${data[key]}'`)
             } else {
-                fields.push(`${key}=${data[key]}`)
+                return res.status(400).json(`${key} cannot be empty`)
             }
         }
 
