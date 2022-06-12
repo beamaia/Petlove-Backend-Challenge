@@ -35,22 +35,23 @@ class Schedule {
     }
 
     /**
-     * Returns a specific person's pets from database
-     * @param {*} req request containing person's id
+     * Returns the schedule based on the date
+     * @param {*} req 
      * @param {*} res 
+     * @param {*} date can be 'history' or 'today' 
      */
-     get(req, res, data) {
+     get(req, res, date) {
         // Find period of schedule
         let sql;
 
-        if (data == 'today') {
+        if (date == 'today') {
             sql = `SELECT * FROM Schedule WHERE date_service >= (SELECT NOW())`
         }
-        else if (data == 'history') {
+        else if (date == 'history') {
             sql = `SELECT * FROM Schedule WHERE date_service < (SELECT NOW())`
         }
         else {
-            res.status(400).json("Invalid data");
+            res.status(400).json("Invalid date");
         }
         
         db.query(sql, (error, results) => {
