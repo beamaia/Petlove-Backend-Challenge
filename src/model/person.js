@@ -7,7 +7,7 @@ class Person {
     }
     /**
      * Returns all persons from database
-     * @param {* req
+     * @param {*} req
      * @param {*} res
      */
     getAll(req, res) {
