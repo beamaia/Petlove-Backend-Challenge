@@ -1,5 +1,5 @@
 const db = require('../database/db');
-const aux = require('../aux/aux');
+const aux = require('../utils/utils');
 
 class Person {
     /**
