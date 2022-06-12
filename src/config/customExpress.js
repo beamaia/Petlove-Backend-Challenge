@@ -3,8 +3,8 @@ const express = require('express')
 const AnimalController = require('../controller/animal')
 // const AnimalTypeController = require('../controller/animalType')
 const PersonController = require('../controller/person')
-// const ScheduleController = require('../controller/schedule')
 // const ServiceController = require('../controller/service')
+const ScheduleController = require('../controller/schedule')
 
 const app = express()
 
@@ -17,6 +17,6 @@ app.use(AnimalController)
 // app.use(AnimalTypeController)
 app.use(PersonController)
 // app.use(ServiceController)
-// app.use(ScheduleController)
+app.use(ScheduleController)
 
 module.exports = app
