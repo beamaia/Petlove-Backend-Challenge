@@ -92,7 +92,6 @@ class Person {
     create(req, res) {
         let data = req.body
 
-        console.log(data)
 
         // Creates auxiliary list of fields to be updated
         // Checks constraints and if all fields are valid
@@ -100,7 +99,6 @@ class Person {
         let fields_val = []
         for (let key in data) {
             if (!(this.attributes.includes(key))) {
-                console.log(key)
                 return res.status(400).json(`Invalid field ${key}`)
             } 
             if (key == 'cpf') {
@@ -163,7 +161,11 @@ class Person {
                 return res.status(400).json(`Invalid field ${key}`)
             }
             else {
-                fields.push(`${key}='${data[key]}'`)
+                if (data[key]) {
+                    fields.push(`${key}='${data[key]}'`)
+                } else {
+                    fields.push(`${key}=${data[key]}`)
+                }
             }
         }
 
