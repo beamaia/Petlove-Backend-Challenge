@@ -1,10 +1,6 @@
 const db = require('../database/db')
 
 class Schedule {
-    constructor() {
-        this.attributes = ['id_schedule', 'id_animal', 'id_person', 'id_service', 'date_service']
-    }
-
     /**
      * Creates a new schedule
      * @param {*} req request containing schedule's data
