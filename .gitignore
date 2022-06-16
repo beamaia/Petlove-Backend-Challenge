@@ -5,5 +5,8 @@
 # node stuff
 node_modules
 
+#jest stuff
+coverage
+
 # python stuff
 *__pycache__
