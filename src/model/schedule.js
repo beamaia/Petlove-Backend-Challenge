@@ -18,19 +18,55 @@ class Schedule {
             if (data[key]) {
                 fields_val.push(`'${data[key]}'`)
             } else {
-                fields_val.push(`${data[key]}`)
+                return res.status(400).json(`${key} cannot be empty`)
             }
         }
 
-        let sql = `INSERT INTO Schedule (${fields_atr.join(',')}) VALUES (${fields_val.join(', ')}) RETURNING *`
+        const sql = `SELECT column_name FROM information_schema.columns WHERE table_name = 'schedule';`
 
+        // First checks if the table has all the fields being inserted (if not, they  would be null)
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error)
             } else {
-                res.status(200).json(results.rows)
+                let atributes = results.rows.map(function (obj) {
+                                return obj.column_name
+                            }).filter(function (elem, index, self) {
+                                return elem != 'id_schedule'
+                            })
+
+                const multipleExist = atributes.every(value => {
+                    return fields_atr.includes(value);
+                });
+                
+                if (!multipleExist) {
+                    return res.status(400).json('Fields cannot be empty, please insert all following attributes: ' + atributes.join(', '))
+                }
+
+                const sql = `SELECT * FROM Animal WHERE id_person='${data.id_person}' AND id_animal='${data.id_animal}'`
+        
+                // Then checks if the pet is registered in the database to the person
+                db.query(sql, (error, results) => {
+                    if(error) {
+                        res.status(400).json(error)
+                    } else if (!results.rowCount) {
+                        return res.status(400).json('Pet or person does not exist, or doesnt match')
+                    } else {
+                        const sql = `INSERT INTO Schedule (${fields_atr.join(',')}) VALUES (${fields_val.join(', ')}) RETURNING *`
+                        
+                        // And finally insert schedule
+                        db.query(sql, (error, results) => {
+                            if(error) {
+                                res.status(400).json(error)
+                            } else {
+                                res.status(200).json(results.rows)
+                            }
+                        })
+                    }
+                })
             }
         })
+
     }
 
     /**
