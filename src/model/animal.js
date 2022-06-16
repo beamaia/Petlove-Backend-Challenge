@@ -50,8 +50,8 @@ class Animal {
     }
 
     /**
-     * Returns a specific person from database
-     * @param {*} req request containing person's id
+     * Returns a specific animal from database
+     * @param {*} req request containing animal's id
      * @param {*} res 
      */
     get(req, res) {
@@ -61,13 +61,13 @@ class Animal {
             return res.status(400).json("Invalid Id");
         }
 
-        const sql = `SELECT * FROM Person WHERE cpf='${id}'`
+        const sql = `SELECT * FROM Animal WHERE id_animal='${id}'`
 
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`);
+                res.status(204).json(`There is no animal with id as ${id}`);
             } else {
                 res.status(200).json(results.rows);
             }
