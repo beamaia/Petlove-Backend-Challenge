@@ -24,6 +24,7 @@ router.get('/person/:id/schedule', function (req, res) {
     Person.getSchedule(req, res, 'today')
 })
 
+// Returns a specific person's pets schedule history from database
 router.get('/person/:id/scheduleHistory', function (req, res) {
     Person.getSchedule(req, res, 'history')
 })
