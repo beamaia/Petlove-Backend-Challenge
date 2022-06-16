@@ -111,12 +111,11 @@ def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     fake = Faker(['pt-BR'])
 
     # Generate random animal and service from the db
-    animal, cpf = select_random(cur, 'animal', 'id_animal, id_person')
+    animal, cpf  = select_random(cur, 'animal', 'id_animal, id_person')
     service = select_random(cur, 'service', 'id_service')[0]
     date = fake.date_between(start_date='-1y', end_date='+1y')
     time = f'{random.randint(8, 17) : 02d}:{random.randrange(0, 59, 15)}:00'
 
-    print(f"INSERT INTO schedule (id_person, id_animal, id_service, date_service) VALUES ('{cpf}', '{animal}', '{service}', '{date} {time}')", f'{date} {time}')
     return f"INSERT INTO schedule (id_person, id_animal, id_service, date_service) VALUES ('{cpf}', '{animal}', '{service}', '{date} {time}')", f'{date} {time}'
 
 def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
@@ -326,9 +325,9 @@ if __name__ == "__main__":
 
     # Insert values
     insert_person(conn)
-    
     insert_animal_type(conn)
     insert_service(conn)
+    insert_animal(conn)
 
     # insert_animal(conn)
     insert_schedule(conn)

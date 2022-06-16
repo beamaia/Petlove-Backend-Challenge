@@ -1,11 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
-// const Animal = require('../model/animal')
+const Animal = require('../model/animal')
 
-// Cadastra uma task em uma to-do list
-router.post('/animal/:id', (req, res) => {
-    console.log("oi")
-})
+// Adds a new animal
+router.post('/animal', Animal.create)
 
 module.exports = router
