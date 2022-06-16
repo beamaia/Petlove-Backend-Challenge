@@ -2,7 +2,7 @@
  * Returns the number of digits in a string 
  * @param {string} str
  **/ 
- function getCountOfDigits(str) {
+function getCountOfDigits(str) {
     return str.replace(/[^0-9]/g, '').length;
 }
 
