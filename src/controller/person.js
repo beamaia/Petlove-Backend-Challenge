@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const Person = require('../model/Person')
+const Person = require('../model/person')
 
 // Adds a new person
 router.post('/person', Person.create)
