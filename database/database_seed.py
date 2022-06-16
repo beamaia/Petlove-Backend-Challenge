@@ -17,7 +17,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
                         full_name varchar(200) NOT NULL,
-                        data_birth date,
+                        date_birth date,
                         number int,
                         road varchar(200),
                         city varchar(100),
@@ -34,21 +34,23 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         id_service SERIAL PRIMARY KEY,
                         service_type varchar(50) NOT NULL,
                         price real NOT NULL
+                        CHECK (price > 0)
                         );"""
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
-                        id_person varchar(11) REFERENCES person(cpf) NOT NULL,
-                        id_type int REFERENCES animalType(id_type) NOT NULL,
+                        id_person varchar(11) REFERENCES person(cpf) ON DELETE CASCADE,
+                        id_type int REFERENCES animalType(id_type) ON DELETE CASCADE,
                         name varchar(200) NOT NULL,
-                        data_birth date
+                        date_birth date
                         );"""
 
     sql_schedule = """CREATE TABLE schedule (
                         id_schedule SERIAL PRIMARY KEY,
-                        id_animal int REFERENCES animal(id_animal) NOT NULL,
-                        id_service int REFERENCES service(id_service) NOT NULL,
-                        date_service timestamp NOT NULL
+                        id_person varchar(11) REFERENCES person(cpf) ON DELETE CASCADE,
+                        id_animal int REFERENCES animal(id_animal) ON DELETE CASCADE,
+                        id_service int REFERENCES service(id_service) ON DELETE CASCADE,
+                        date_service timestamp NOT NULL UNIQUE
                         );"""
 
     cur.execute(sql_person)
@@ -76,7 +78,7 @@ def create_person() -> tuple[str, str]:
     city = fake.city()
     phone = fake.phone_number()
 
-    return f"INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
+    return f"INSERT INTO person (cpf, full_name, date_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
 
 def create_animal(cur:psycopg2.extensions.cursor) -> str:
     """
@@ -90,12 +92,12 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
     fake = Faker(['pt-BR'])
 
     # Generate random person in the db and animal's info
-    person = select_random(cur, 'person', 'cpf')
-    animal_type = select_random(cur, 'animalType', 'id_type')
+    person = select_random(cur, 'person', 'cpf')[0]
+    animal_type = select_random(cur, 'animalType', 'id_type')[0]
     name = fake.first_name()
     birthday = fake.date_of_birth(maximum_age=10)
 
-    return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
+    return f"INSERT INTO animal (id_person, id_type, name, date_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
 def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     """
@@ -109,12 +111,12 @@ def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     fake = Faker(['pt-BR'])
 
     # Generate random animal and service from the db
-    animal = select_random(cur, 'animal', 'id_animal')
-    service = select_random(cur, 'service', 'id_service')
+    animal, cpf  = select_random(cur, 'animal', 'id_animal, id_person')
+    service = select_random(cur, 'service', 'id_service')[0]
     date = fake.date_between(start_date='-1y', end_date='+1y')
     time = f'{random.randint(8, 17) : 02d}:{random.randrange(0, 59, 15)}:00'
 
-    return f"INSERT INTO schedule (id_animal, id_service, date_service) VALUES ('{animal}', '{service}', '{date} {time}')", f'{date} {time}'
+    return f"INSERT INTO schedule (id_person, id_animal, id_service, date_service) VALUES ('{cpf}', '{animal}', '{service}', '{date} {time}')", f'{date} {time}'
 
 def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
     """
@@ -287,7 +289,7 @@ def insert_tables(conn:psycopg2.extensions.connection) -> None:
                 quit()
             
 
-def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:str) -> str:
+def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:str) -> list[str]:
     """
     Select an attribute of a random tuple from the db
             Parameter:
@@ -300,7 +302,7 @@ def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:s
     sql = f"SELECT {column_name} FROM {table_name} ORDER BY RANDOM() LIMIT 1"
     curr.execute(sql)
 
-    return curr.fetchone()[0]
+    return curr.fetchone()
     
 
 if __name__ == "__main__":
@@ -323,11 +325,11 @@ if __name__ == "__main__":
 
     # Insert values
     insert_person(conn)
-    
     insert_animal_type(conn)
     insert_service(conn)
-
     insert_animal(conn)
+
+    # insert_animal(conn)
     insert_schedule(conn)
 
     conn.close()
