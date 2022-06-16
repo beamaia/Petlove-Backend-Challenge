@@ -17,7 +17,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
                         full_name varchar(200) NOT NULL,
-                        data_birth date,
+                        date_birth date,
                         number int,
                         road varchar(200),
                         city varchar(100),
@@ -42,7 +42,7 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         id_person varchar(11) REFERENCES person(cpf) ON DELETE CASCADE,
                         id_type int REFERENCES animalType(id_type) ON DELETE CASCADE,
                         name varchar(200) NOT NULL,
-                        data_birth date
+                        date_birth date
                         );"""
 
     sql_schedule = """CREATE TABLE schedule (
@@ -78,7 +78,7 @@ def create_person() -> tuple[str, str]:
     city = fake.city()
     phone = fake.phone_number()
 
-    return f"INSERT INTO person (cpf, full_name, data_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
+    return f"INSERT INTO person (cpf, full_name, date_birth, number, road, city, postal_code, phone) VALUES ('{cpf}', '{name}', '{birthday}', {number}, '{road}', '{city}', '{postal_code}', '{phone}')" , cpf  
 
 def create_animal(cur:psycopg2.extensions.cursor) -> str:
     """
@@ -97,7 +97,7 @@ def create_animal(cur:psycopg2.extensions.cursor) -> str:
     name = fake.first_name()
     birthday = fake.date_of_birth(maximum_age=10)
 
-    return f"INSERT INTO animal (id_person, id_type, name, data_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
+    return f"INSERT INTO animal (id_person, id_type, name, date_birth) VALUES ('{person}', '{animal_type}', '{name}', '{birthday}')"
 
 def create_schedule(cur:psycopg2.extensions.cursor) -> tuple[str, str]:
     """
