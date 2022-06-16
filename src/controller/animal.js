@@ -6,6 +6,9 @@ const Animal = require('../model/animal')
 // Adds a new animal
 router.post('/animal', Animal.create)
 
+// Updates a person
+router.patch('/animal/:id', Animal.update)
+
 // Returns all animals from database
 router.get('/animal', Animal.getAll)
 
