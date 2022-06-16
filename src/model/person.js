@@ -86,7 +86,7 @@ class Person {
      * @param {*} req request containing person's id
      * @param {*} res 
      */
-    getSchedule(req, res, data) {
+    getSchedule(req, res, date) {
         let id = req.params.id
             
         if (isNaN(id)) {
@@ -106,26 +106,27 @@ class Person {
                 const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
                 
                 db.query(sql, (error, results) => {
+                    let sql_s;
                     if(error) {
                         res.status(400).json(error);
                     } else if (!results.rowCount) {
                         res.status(204).json(`The person with cpf as ${id} has no pet`);
                     } else {
                         // Finally, search for schedule
-                        if (data == 'today') {
-                            const sql = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service > (SELECT NOW())`
+                        if (date == 'future') {
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service >= (SELECT NOW())`
                         }
-                        else if (data == 'history') {
-                            const sql = `SELECT * FROM Schedule WHERE id_person = '${id}'`
+                        else if (date == 'history') {
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service < (SELECT NOW())`
+                        } else {
+                            res.status(400).json("Invalid date");
                         }
-                        else {
-                            res.status(400).json("Invalid data");
-                        }
-                        db.query(sql, (error, results) => {
+                        
+                        db.query(sql_s, (error, results) => {
                             if(error) {
                                 res.status(400).json(error);
                             } else if (!results.rowCount) {
-                                res.status(204).json(`The person with cpf as ${id} has no schedule`);
+                                res.status(204).json(`The person with cpf as ${id} has no ${date} schedule`);
                             } else {
                                 res.status(200).json(results.rows);
                             }
