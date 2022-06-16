@@ -50,18 +50,26 @@ class Animal {
     }
 
     /**
-     * Returns all animals from database
-     * @param {*} req
-     * @param {*} res
+     * Returns a specific animal from database
+     * @param {*} req request containing animal's id
+     * @param {*} res 
      */
-     getAll(req, res) {
-        const sql = `SELECT * FROM Animal;`;
+    get(req, res) {
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+
+        const sql = `SELECT * FROM Animal WHERE id_animal='${id}'`
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                res.status(400).json(error);
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no animal with id as ${id}`);
             } else {
-                res.status(200).json(results.rows)
+                res.status(200).json(results.rows);
             }
         })
     }
@@ -79,7 +87,6 @@ class Animal {
     update(req, res) {  
         let data = req.body
         let id = req.params.id
-
 
         if (isNaN(id)) {
             return res.status(400).json("Invalid Id");
@@ -106,6 +113,23 @@ class Animal {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
                 res.status(204).json(`There are no animal with id as ${id}`)
+            } else {
+                res.status(200).json(results.rows)
+            }
+        })
+    }
+    
+    /**
+     * Returns all animals from database
+     * @param {*} req
+     * @param {*} res
+     */
+    getAll(req, res) {
+        const sql = `SELECT * FROM Animal;`;
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
             } else {
                 res.status(200).json(results.rows)
             }
