@@ -161,8 +161,8 @@ class Person {
                     return res.status(400).json("Invalid postal code")
                 }
             } 
-            if (key == 'data_birth') {
-                if (data.data_birth && (aux.getAge(data.data_birth) < 18 || aux.getAge(data.data_birth) > 140)) {
+            if (key == 'date_birth') {
+                if (data.date_birth && (aux.getAge(data.date_birth) < 18 || aux.getAge(data.date_birth) > 140)) {
                     return res.status(400).json("Invalid birth date")
                 }
             }
