@@ -23,6 +23,8 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         city varchar(100),
                         postal_code varchar(9),
                         phone varchar(20)
+                        CONSTRAINT
+                        cpf_check CHECK (cpf ~ '^[0-9]*$' AND LENGTH(cpf) = 11)
                         );"""
                         
     sql_animal_type = """CREATE TABLE animalType (
@@ -39,8 +41,8 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
-                        id_person varchar(11) REFERENCES person(cpf) ON DELETE CASCADE,
-                        id_type int REFERENCES animalType(id_type) ON DELETE CASCADE,
+                        id_person varchar(11) REFERENCES person(cpf) ON DELETE SET NULL,
+                        id_type int REFERENCES animalType(id_type) ON DELETE SET NULL,
                         name varchar(200) NOT NULL,
                         date_birth date
                         );"""
@@ -69,7 +71,7 @@ def create_person() -> tuple[str, str]:
     fake = Faker(['pt-BR'])
 
     # Generate random information
-    cpf = str(random.randint(0, 100000000000))
+    cpf = str(random.randint(10000000000, 100000000000))
     birthday = fake.date_of_birth()
     name = fake.name()
     postal_code = fake.postcode()
@@ -304,21 +306,47 @@ def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:s
 
     return curr.fetchone()
     
+def tables_exists(conn:psycopg2.extensions.connection) -> None:
+    results = []
+    with conn:
+        with conn.cursor() as cur:
+            sql = f"SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+            cur.execute(sql)
+
+            results = cur.fetchall()
+    return len(results) == 5
+
 
 if __name__ == "__main__":
     random.seed(42)
     Faker.seed(42)
 
     # connects to the bd
-    conn = psycopg2.connect(
-                    dbname=DB['name'],
-                    user=DB['user'],
-                    password=DB['password'],
-                    host=DB['host'],
-                    port=DB['port'],
-                    options="-c search_path="+'public'
-                    )
+    attempts = 5
+    while attempts:
+        
+        try:
+            conn = psycopg2.connect(
+                            dbname=DB['name'],
+                            user=DB['user'],
+                            password=DB['password'],
+                            host=DB['host'],
+                            port=DB['port'],
+                            options="-c search_path="+'public'
+                            )
+            
+            break
+        except psycopg2.OperationalError as e:
+            print("Connection can't be established, trying again...")
+            attempts -= 1
+            sleep(1)
+            continue
+
     conn.set_session(autocommit=True)
+
+    if tables_exists(conn):
+        print('Tables already exists!')
+        quit()
 
     # Create tables
     insert_tables(conn)
