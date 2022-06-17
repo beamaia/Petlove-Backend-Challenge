@@ -3,6 +3,9 @@ const router = express.Router()
 
 const Service = require('../model/service')
 
+// Adds a new service
+router.post('/service', Service.create)
+
 // Returns a specific service from database
 router.get('/service/:id', Service.get)
 
