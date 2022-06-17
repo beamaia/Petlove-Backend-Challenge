@@ -306,6 +306,16 @@ def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:s
 
     return curr.fetchone()
     
+def tables_exists(conn:psycopg2.extensions.connection) -> None:
+    results = []
+    with conn:
+        with conn.cursor() as cur:
+            sql = f"SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+            cur.execute(sql)
+
+            results = cur.fetchall()
+    return len(results) == 5
+
 
 if __name__ == "__main__":
     random.seed(42)
@@ -333,6 +343,10 @@ if __name__ == "__main__":
             continue
 
     conn.set_session(autocommit=True)
+
+    if tables_exists(conn):
+        print('Tables already exists!')
+        quit()
 
     # Create tables
     insert_tables(conn)
