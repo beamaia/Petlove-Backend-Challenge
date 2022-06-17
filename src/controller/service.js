@@ -12,6 +12,9 @@ router.get('/service/:id', Service.get)
 // Updates a service by id
 router.patch('/service/:id', Service.update)
 
+// Deletes a servicec
+router.delete('/service/:id', Service.delete)
+
 // Returns all services from database
 router.get('/service', Service.getAll)
 
