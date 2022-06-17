@@ -27,7 +27,7 @@ class Service {
             }
         }
 
-        const sql_insert = `INSERT INTO Service (${fields_atr.join(', ')}) VALUES (${fields_val.join(', ')})`
+        const sql_insert = `INSERT INTO Service (${fields_atr.join(', ')}) VALUES (${fields_val.join(', ')}) RETURNING *`
         db.query(sql_insert, (error, results) => {
             if(error) {
                 res.status(400).json(error)
@@ -59,6 +59,51 @@ class Service {
             }
         })
     }
+
+    /**
+     * Updates a service's data
+     * Could alter the following attributes:
+     * - Service type (service_type)
+     * - Price (price)
+     * Cannot alter id
+     * @param {*} req request containing service's id
+     * @param {*} res 
+     */
+    update(req, res) {  
+        let data = req.body
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+        
+        // Creates auxiliary list of fields to be updated
+        let fields = []
+        for (let key in data) {
+            if (key == 'id_person') {
+                return res.status(400).json('Owner cannot be changed')
+            } else {
+                if (data[key]) {
+                    fields.push(`${key}='${data[key]}'`)
+                } else {
+                    fields.push(`${key}=${data[key]}`)
+                }
+            }
+        }
+
+        const sql = `UPDATE Service SET ${fields.join(', ')} WHERE id_service='${id}' RETURNING *`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(204).json(`There are no service with id as ${id}`)
+            } else {
+                res.status(200).json(results.rows)
+            }
+        })
+    }
+    
 
     /**
      * Returns all services from database
