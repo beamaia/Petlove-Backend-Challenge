@@ -159,6 +159,41 @@ class Animal {
             }
         })
     }
+
+    /**
+     * Returns a specific animals's pets from database
+     * @param {*} req request containing animals's id
+     * @param {*} res 
+     */
+    getSchedule(req, res, date) {
+        let id = req.params.id
+            
+        if (isNaN(id)) {
+            res.status(400).json("Invalid Id");
+        }
+
+        let sql = ""
+
+        if (date === 'future') {
+            sql = `SELECT * FROM Schedule WHERE id_animal = '${id}' AND date_service >= (SELECT NOW())`
+        }
+        else if (date === 'history') {
+            sql = `SELECT * FROM Schedule WHERE id_animal = '${id}'`
+        } else {
+            res.status(400).json("Invalid date");
+        }
+        
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error);
+            } else if (!results.rowCount) {
+                res.status(204).json(`The animal with id as ${id} has no ${date} schedule`);
+            } else {
+                res.status(200).json(results.rows);
+            }
+        })                                
+    }       
+    
 }
 
 module.exports = new Animal
