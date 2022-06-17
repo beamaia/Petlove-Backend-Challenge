@@ -80,15 +80,12 @@ class Service {
         // Creates auxiliary list of fields to be updated
         let fields = []
         for (let key in data) {
-            if (key == 'id_person') {
-                return res.status(400).json('Owner cannot be changed')
+            if (data[key]) {
+                fields.push(`${key}='${data[key]}'`)
             } else {
-                if (data[key]) {
-                    fields.push(`${key}='${data[key]}'`)
-                } else {
-                    fields.push(`${key}=${data[key]}`)
-                }
+                fields.push(`${key}=${data[key]}`)
             }
+            
         }
 
         const sql = `UPDATE Service SET ${fields.join(', ')} WHERE id_service='${id}' RETURNING *`
