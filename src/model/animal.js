@@ -67,9 +67,9 @@ class Animal {
             if(error) {
                 res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no animal with id as ${id}`);
+                res.status(204).json(`There is no animal with id as ${id}`)
             } else {
-                res.status(200).json(results.rows);
+                res.status(200).json(results.rows)
             }
         })
     }
