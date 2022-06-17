@@ -1,12 +1,13 @@
 const db = require('../database/db');
 
+class Service {
     /**
-     * Returns a specific service from database
-     * @param {*} req request containing service's id
+     * Returns all services from database
+     * @param {*} req
      * @param {*} res 
      */
-    get(req, res) {
-        const sql = `SELECT * FROM Service;`;
+    getAll(req, res) {
+        const sql = `SELECT * FROM service;`;
 
         db.query(sql, (error, results) => {
             if(error) {
@@ -16,3 +17,6 @@ const db = require('../database/db');
             }
         })
     }
+}
+
+module.exports = new Service
