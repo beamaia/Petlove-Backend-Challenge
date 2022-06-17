@@ -125,7 +125,7 @@ class Animal {
      * @param {*} res
      */
     getAll(req, res) {
-        const sql = `SELECT * FROM Animal;`;
+        const sql = `SELECT * FROM Animal;`
 
         db.query(sql, (error, results) => {
             if(error) {
