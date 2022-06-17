@@ -18,4 +18,14 @@ router.delete('/animal/:id', Animal.delete)
 // Returns all animals from database
 router.get('/animal', Animal.getAll)
 
+// Returns a specific animals' schedule from database
+router.get('/animal/:id/schedule', function (req, res) {
+    Animal.getSchedule(req, res, 'future')
+})
+
+// Returns a specific animal's schedule history from database
+router.get('/animal/:id/scheduleHistory', function (req, res) {
+    Animal.getSchedule(req, res, 'history')
+})
+
 module.exports = router
