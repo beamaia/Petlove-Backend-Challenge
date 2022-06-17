@@ -2,8 +2,8 @@ const db = require('../database/db');
 
 class Service {
     /**
-     * Adds a new animal to database.
-     * Animal must have the following attributes:
+     * Adds a new service to database.
+     * Service must have the following attributes:
      * - Service type (service_type)
      * - Price (price)
      * @param {*} req 
@@ -13,7 +13,6 @@ class Service {
         let data = req.body
 
         // Creates auxiliary list of fields to be updated
-        // Checks constraints and if all fields are valid
         let fields_atr = []
         let fields_val = []        
 
