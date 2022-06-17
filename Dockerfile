@@ -30,6 +30,4 @@ RUN chmod +x init.sh
 ENV TZ America/Sao_Paulo
 EXPOSE 8080
 
-# CMD [ "npm", "start" ]
-# ENTRYPOINT ["sh", "init.sh", "&&", "bash"]
-CMD ["bash"]
+ENTRYPOINT ["sh", "init.sh", "&&", "bash"]
