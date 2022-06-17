@@ -39,7 +39,6 @@ class Animal {
         }
 
         const sql_insert = `INSERT INTO Animal (${fields_atr.join(', ')}) VALUES (${fields_val.join(', ')})`
-        console.log(sql_insert)
         db.query(sql_insert, (error, results) => {
             if(error) {
                 res.status(400).json(error)
