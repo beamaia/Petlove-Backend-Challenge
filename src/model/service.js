@@ -6,21 +6,13 @@ const db = require('../database/db');
      * @param {*} res 
      */
     get(req, res) {
-        let id = req.params.id
-
-        if (isNaN(id)) {
-            return res.status(400).json("Invalid Id");
-        }
-
-        const sql = `SELECT * FROM Service WHERE id_service ='${id}'`
+        const sql = `SELECT * FROM Service;`;
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error);
-            } else if (!results.rowCount) {
-                res.status(204).json(`There is no service with id as ${id}`);
+                res.status(400).json(error)
             } else {
-                res.status(200).json(results.rows);
+                res.status(200).json(results.rows)
             }
         })
     }
