@@ -41,8 +41,8 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
-                        id_person varchar(11) REFERENCES person(cpf) ON DELETE CASCADE,
-                        id_type int REFERENCES animalType(id_type) ON DELETE CASCADE,
+                        id_person varchar(11) REFERENCES person(cpf) ON DELETE SET NULL,
+                        id_type int REFERENCES animalType(id_type) ON DELETE SET NULL,
                         name varchar(200) NOT NULL,
                         date_birth date
                         );"""
