@@ -12,6 +12,9 @@ router.get('/animal/:id', Animal.get)
 // Updates an animal by id
 router.patch('/animal/:id', Animal.update)
 
+// Deletes an animal
+router.delete('/animal/:id', Animal.delete)
+
 // Returns all animals from database
 router.get('/animal', Animal.getAll)
 
