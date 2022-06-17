@@ -9,6 +9,9 @@ router.post('/service', Service.create)
 // Returns a specific service from database
 router.get('/service/:id', Service.get)
 
+// Updates a service by id
+router.patch('/service/:id', Service.update)
+
 // Returns all services from database
 router.get('/service', Service.getAll)
 
