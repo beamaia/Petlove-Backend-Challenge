@@ -117,7 +117,32 @@ class Animal {
             }
         })
     }
-    
+
+    /**
+     * Deletes an animal from database
+     * @param {*} req request containing animal's id
+     * @param {*} res
+     **/ 
+     delete(req, res) {
+        let id = req.params.id
+
+        if (isNaN(id)) {
+            return res.status(400).json("Invalid Id");
+        }
+
+        const sql = `DELETE FROM Animal WHERE id_animal='${id}'`
+
+        db.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(204).json(`There is no animal with id as ${id}`)
+            } else {
+                res.status(200).json(results)
+            }
+        })
+    }
+
     /**
      * Returns all animals from database
      * @param {*} req
