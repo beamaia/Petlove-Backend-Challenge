@@ -23,6 +23,8 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         city varchar(100),
                         postal_code varchar(9),
                         phone varchar(20)
+                        CONSTRAINT
+                        cpf_check CHECK (cpf ~ '^[0-9]*$' AND LENGTH(cpf) = 11)
                         );"""
                         
     sql_animal_type = """CREATE TABLE animalType (
@@ -69,7 +71,7 @@ def create_person() -> tuple[str, str]:
     fake = Faker(['pt-BR'])
 
     # Generate random information
-    cpf = str(random.randint(0, 100000000000))
+    cpf = str(random.randint(10000000000, 100000000000))
     birthday = fake.date_of_birth()
     name = fake.name()
     postal_code = fake.postcode()
@@ -310,14 +312,26 @@ if __name__ == "__main__":
     Faker.seed(42)
 
     # connects to the bd
-    conn = psycopg2.connect(
-                    dbname=DB['name'],
-                    user=DB['user'],
-                    password=DB['password'],
-                    host=DB['host'],
-                    port=DB['port'],
-                    options="-c search_path="+'public'
-                    )
+    attempts = 5
+    while attempts:
+        
+        try:
+            conn = psycopg2.connect(
+                            dbname=DB['name'],
+                            user=DB['user'],
+                            password=DB['password'],
+                            host=DB['host'],
+                            port=DB['port'],
+                            options="-c search_path="+'public'
+                            )
+            
+            break
+        except psycopg2.OperationalError as e:
+            print("Connection can't be established, trying again...")
+            attempts -= 1
+            sleep(1)
+            continue
+
     conn.set_session(autocommit=True)
 
     # Create tables
