@@ -30,17 +30,17 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_animal_type = """CREATE TABLE animalType (
                         id_type SERIAL PRIMARY KEY,
                         type varchar(200) NOT NULL UNIQUE,
-                        CONSTRAINT check_type CHECK (type ~ '^[A-Z]+[a-z]*$')
+                        CONSTRAINT check_type CHECK (type ~ '^[A-Z]+[a-z ]*$')
                         );"""
-                        # CHECK(lower(type) = type))
+
     sql_service = """CREATE TABLE service (
                         id_service SERIAL PRIMARY KEY,
                         service_type varchar(50) UNIQUE NOT NULL ,
                         price real NOT NULL
                         CHECK (price > 0), 
-                        CONSTRAINT check_service_type CHECK (service_type ~ '^[A-Z]+[a-z]*$')
+                        CONSTRAINT check_service_type CHECK (service_type ~ '^[A-Z]+[a-z ]*$')
                         );"""
-                        # CHECK(lower(service_type) = service_type))
+
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
                         id_person varchar(11) REFERENCES person(cpf) ON DELETE SET NULL,
@@ -144,8 +144,9 @@ def insert_animal_type(conn:psycopg2.extensions.connection) -> None:
 
             print('Inserting values into animalType...')
 
-            for animal_aux in list(Animal.__members__):
-                sql = f"INSERT INTO animalType (type) VALUES ('{animal_aux}')"
+            for animal_aux in list(Animal):
+                sql = f"INSERT INTO animalType (type) VALUES ('{animal_aux.value}')"
+
                 try:
                     cur.execute(sql)
                 except psycopg2.errors.UniqueViolation as e:
