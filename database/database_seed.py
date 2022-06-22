@@ -29,16 +29,18 @@ def create_tables(cur:psycopg2.extensions.cursor) -> None:
                         
     sql_animal_type = """CREATE TABLE animalType (
                         id_type SERIAL PRIMARY KEY,
-                        type varchar(200) NOT NULL
+                        type varchar(200) NOT NULL UNIQUE,
+                        CONSTRAINT check_type CHECK (type ~ '^[A-Z]+[a-z]*$')
                         );"""
-                        
+                        # CHECK(lower(type) = type))
     sql_service = """CREATE TABLE service (
                         id_service SERIAL PRIMARY KEY,
-                        service_type varchar(50) NOT NULL,
+                        service_type varchar(50) UNIQUE NOT NULL ,
                         price real NOT NULL
-                        CHECK (price > 0)
+                        CHECK (price > 0), 
+                        CONSTRAINT check_service_type CHECK (service_type ~ '^[A-Z]+[a-z]*$')
                         );"""
-                        
+                        # CHECK(lower(service_type) = service_type))
     sql_animal = """CREATE TABLE animal (
                         id_animal SERIAL PRIMARY KEY, 
                         id_person varchar(11) REFERENCES person(cpf) ON DELETE SET NULL,
@@ -277,6 +279,7 @@ def insert_tables(conn:psycopg2.extensions.connection) -> None:
             try:
                 # Checks if table exists
                 cur.execute("select exists(select * from information_schema.tables where table_name=%s)", ('schedule',))
+                
                 if not cur.fetchone()[0]:
                     create_tables(cur)
 
