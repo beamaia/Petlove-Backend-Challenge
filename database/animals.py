@@ -29,7 +29,7 @@ class Animal(Enum):
     Gerbil = 'Gerbil'
     Hamster = 'Hamster'
     Mouse = 'Mouse'
-    Guinea_Pig = 'Guinea Pig'
+    Guinea_Pig = 'Guinea pig'
 
     # Others
     Cat = 'Cat'
