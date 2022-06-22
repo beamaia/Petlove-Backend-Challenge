@@ -55,3 +55,45 @@ describe('GET /animalType/:id', () => {
 
 
 });    
+
+describe('POST /animalType', () => {
+    test('posts a new animal type', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'Lion'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('id_type');
+            expect(response.body.rows[0]).toHaveProperty('type');
+            expect(response.body.rows[0].type).toBe('Lion');
+    })
+
+    test('returns error if animal type is empty', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({});
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type is null', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: undefined
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    // teste animal type repetido
+    // teste id repetido
+    // teste id não numérico
+    // teste animal type tamanho máximo
+})
