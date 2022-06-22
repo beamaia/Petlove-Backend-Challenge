@@ -55,3 +55,99 @@ describe('GET /animalType/:id', () => {
 
 
 });    
+
+// Tests post route for animalType
+describe('POST /animalType', () => {
+    test('posts a new animal type', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'Lion'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('id_type');
+            expect(response.body.rows[0]).toHaveProperty('type');
+            expect(response.body.rows[0].type).toBe('Lion');
+    })
+
+    test('returns error if animal type is empty', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({});
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type is null', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: undefined
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('posts an animal type already inserted', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'Lion'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if id is already in use', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                id_type: 1,
+                type: 'Tiger'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body.detail).toEqual('Key (id_type)=(1) already exists.');
+    })
+
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                id_type: 'a',
+                type: 'Tiger'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type has more than 200 caracters', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'L'+'ion'.repeat(67)
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type doesnt follow regex constraint', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'lion'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
