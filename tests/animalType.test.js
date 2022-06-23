@@ -161,9 +161,81 @@ describe('POST /animalType', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    })
+        })
 })
 
+// Tests patch route for animalType
+describe('PATCH /animalType/:id', () => {
+    test('updates an animal type', async () => {
+        const response = await request(app)
+            .patch('/animalType/47')
+            .send({
+                type: 'Tiger'
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toHaveLength(1);
+
+            expect(response.body[0]).toHaveProperty('id_type');
+            expect(response.body[0]).toHaveProperty('type');
+            expect(response.body[0].type).toBe('Tiger');
+    })
+
+    test('returns error if animal type is empty', async () => {
+        const response = await request(app)
+            .patch('/animalType/47')
+            .send({});
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if tries change id', async () => {
+        const response = await request(app)
+            .patch('/animalType/47')
+            .send({
+                id_type: 90
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type doesnt follows constraint', async () => {
+        const response = await request(app)
+            .patch('/animalType/47')
+            .send({
+                type: 'lion'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns no content if animal type\'s id doesnt exist', async () => {
+        const response = await request(app)
+            .patch('/animalType/90')
+            .send({
+                type: 'Tiger'
+            });
+
+            expect(response.status).toBe(204);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal type id is not numeric', async () => {
+        const response = await request(app)
+            .patch('/animalType/a')
+            .send({
+                type: 'Panther'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
+    
 // Tests delete route for animalType
 describe('DELETE /animalType/:id', () => {
     test('deletes an animal type', async () => {
