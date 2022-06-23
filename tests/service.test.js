@@ -65,7 +65,7 @@ describe('POST /service', () => {
             .post('/service')
             .send({
                 id_service: '9',
-                service_type: 'Urine exam',
+                service_type: 'Urine exm',
                 price: 110
             });
 
@@ -195,77 +195,79 @@ describe('POST /service', () => {
 })
 
 // Tests patch route for service
-// describe('PATCH /service/:id', () => {
-//     test('updates a service', async () => {
-//         const response = await request(app)
-//             .patch('/service/9')
-//             .send({
-//                 service_type: 'Tiger'
-//             });
+describe('PATCH /service/:id', () => {
+    test('updates a service', async () => {
+        const response = await request(app)
+            .patch('/service/9')
+            .send({
+                service_type: 'Urine exam',
+                price: 100
+            });
 
-//             expect(response.status).toBe(200);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//             expect(response.body).toHaveLength(1);
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toHaveLength(1);
 
-//             expect(response.body[0]).toHaveProperty('id_service');
-//             expect(response.body[0]).toHaveProperty('type');
-//             expect(response.body[0].type).toBe('Tiger');
-//     })
+            expect(response.body[0]).toHaveProperty('id_service');
+            expect(response.body[0]).toHaveProperty('service_type');
+            expect(response.body[0].service_type).toBe('Urine exam');
+            expect(response.body[0].price).toBe(100);
+    })
 
-//     test('returns error if animal type is empty', async () => {
-//         const response = await request(app)
-//             .patch('/service/47')
-//             .send({});
+    test('returns error if service is empty', async () => {
+        const response = await request(app)
+            .patch('/service/9')
+            .send({});
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('returns error if tries change id', async () => {
-//         const response = await request(app)
-//             .patch('/service/47')
-//             .send({
-//                 id_service: 90
-//             });
+    test('returns error if tries to change id', async () => {
+        const response = await request(app)
+            .patch('/service/9')
+            .send({
+                id_service: 0
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
-//             expect(response.body).toEqual('Cannot alter id');
-//     })
+            expect(response.body).toEqual('Cannot alter id');
+    })
 
-//     test('returns error if animal type doesnt follows constraint', async () => {
-//         const response = await request(app)
-//             .patch('/service/47')
-//             .send({
-//                 type: 'lion'
-//             });
+    test('returns error if service name doesnt follows constraint', async () => {
+        const response = await request(app)
+            .patch('/service/9')
+            .send({
+                service_type: 'Urine Exam'
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('returns no content if animal type\'s id doesnt exist', async () => {
-//         const response = await request(app)
-//             .patch('/service/0')
-//             .send({
-//                 type: 'Tiger'
-//             });
+    test('returns no content if service\'s id doesnt exist', async () => {
+        const response = await request(app)
+            .patch('/service/0')
+            .send({
+                price: 80
+            });
 
-//             expect(response.status).toBe(204);
-//     })
+            expect(response.status).toBe(204);
+    })
 
-//     test('returns error if animal type id is not numeric', async () => {
-//         const response = await request(app)
-//             .patch('/service/a')
-//             .send({
-//                 type: 'Panther'
-//             });
+    test('returns error if service id is not numeric', async () => {
+        const response = await request(app)
+            .patch('/service/a')
+            .send({
+                price: 80
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
-// })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
     
 // // Tests delete route for service
 // describe('DELETE /service/:id', () => {
