@@ -200,6 +200,8 @@ describe('PATCH /animalType/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body).toEqual('Cannot alter id');
     })
 
     test('returns error if animal type doesnt follows constraint', async () => {
@@ -221,7 +223,6 @@ describe('PATCH /animalType/:id', () => {
             });
 
             expect(response.status).toBe(204);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
     test('returns error if animal type id is not numeric', async () => {
@@ -246,7 +247,7 @@ describe('DELETE /animalType/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
             expect(response.body.rows).toHaveLength(1);
 
-            expect(response.body.rows[0].type).toBe('Lion');
+            expect(response.body.rows[0].type).toBe('Tiger');
     })
 
     test('returns no content if animal type does not exist', async () => {
