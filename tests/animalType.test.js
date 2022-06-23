@@ -58,7 +58,7 @@ describe('GET /animalType/:id', () => {
 
 // Tests post route for animalType
 describe('POST /animalType', () => {
-    test('posts a new animal type', async () => {
+    test('posts a new animal type passing id', async () => {
         const response = await request(app)
             .post('/animalType')
             .send({
@@ -73,6 +73,24 @@ describe('POST /animalType', () => {
             expect(response.body.rows[0]).toHaveProperty('type');
             expect(response.body.rows[0].type).toBe('Lion');
     })
+
+    test('posts a new animal type without passing id', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                type: 'Capybara'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('id_type');
+            expect(response.body.rows[0]).toHaveProperty('type');
+
+        // deletes the created service so it wont conflit to tests
+        const response_del = await request(app)
+            .delete(`/animalType/${response.body.rows[0].id_type}`)
+    })    
 
     test('returns error if animal type is empty', async () => {
         const response = await request(app)
@@ -98,14 +116,15 @@ describe('POST /animalType', () => {
         const response = await request(app)
             .post('/animalType')
             .send({
-                id_type: undefined
+                id_type: null,
+                type: 'Panther'
             });
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('posts an animal type already inserted', async () => {
+    test('returns error if an animal type already inserted', async () => {
         const response = await request(app)
             .post('/animalType')
             .send({
