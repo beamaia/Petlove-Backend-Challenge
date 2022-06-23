@@ -58,113 +58,141 @@ describe('GET /service/:id', () => {
 
 })
 
-// // Tests post route for service
-// describe('POST /service', () => {
-//     test('posts a new animal type', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 id_type: '47',
-//                 type: 'Lion'
-//             });
+// Tests post route for service
+describe('POST /service', () => {
+    test('posts a new service passing id', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                id_service: '9',
+                service_type: 'Urine exam',
+                price: 110
+            });
 
-//             expect(response.status).toBe(201);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
-//             expect(response.body.rows[0]).toHaveProperty('id_type');
-//             expect(response.body.rows[0]).toHaveProperty('type');
-//             expect(response.body.rows[0].type).toBe('Lion');
-//     })
+            expect(response.body.rows[0]).toHaveProperty('id_service');
+            expect(response.body.rows[0]).toHaveProperty('service_type');
+            expect(response.body.rows[0]).toHaveProperty('price');
+    })
 
-//     test('returns error if animal type is empty', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({});
+    test('posts a new service without passing id', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                service_type: 'Tomography',
+                price: 350
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
-//     test('returns error if animal type is null', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 type: undefined
-//             });
+            expect(response.body.rows[0]).toHaveProperty('id_service');
+            expect(response.body.rows[0]).toHaveProperty('service_type');
+            expect(response.body.rows[0]).toHaveProperty('price');
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+        // deletes the created service so it wont conflit to tests
+        const response_del = await request(app)
+            .delete(`/service/${response.body.rows[0].id_service}`)
+    })
 
-//     test('returns error if animal type\'s id is null', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 id_type: undefined
-//             });
+    test('returns error if service is empty', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({});
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('posts an animal type already inserted', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 type: 'Lion'
-//             });
+    test('returns error if service\'s price is null', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                service_type: 'Biopsy',
+                price: undefined
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('returns error if id is already in use', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 id_type: 1,
-//                 type: 'Tiger'
-//             });
+    test('returns error if service\'s id is null', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                id_service: null,
+                service_type: 'Biopsy',
+                price: 90
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//             expect(response.body.detail).toEqual('Key (id_type)=(1) already exists.');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('returns error if id is not a number', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 id_type: 'a',
-//                 type: 'Tiger'
-//             });
+    test('returns error if a service was already inserted', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                service_type: 'Grooming',
+                price: 80
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-//     test('returns error if animal type has more than 200 caracters', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 type: 'L'+'ion'.repeat(67)
-//             });
+    test('returns error if id is already in use', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                id_service: 1,
+                service_type: 'Biopsy',
+                price: 90
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body.detail).toEqual('Key (id_service)=(1) already exists.');
+    })
 
-//     test('returns error if animal type doesnt follow regex constraint', async () => {
-//         const response = await request(app)
-//             .post('/service')
-//             .send({
-//                 type: 'lion'
-//             });
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                id_service: 'a',
+                service_type: 'Biopsy',
+                price: 90
+            });
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//         })
-// })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if service has more than 50 caracters', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                service_type: 'B'+'iopsy'.repeat(10)
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if service doesnt follow regex constraint', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                service_type: 'biopsy',
+                price: 90
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        })
+})
 
 // // Tests patch route for service
 // describe('PATCH /service/:id', () => {
@@ -179,7 +207,7 @@ describe('GET /service/:id', () => {
 //             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 //             expect(response.body).toHaveLength(1);
 
-//             expect(response.body[0]).toHaveProperty('id_type');
+//             expect(response.body[0]).toHaveProperty('id_service');
 //             expect(response.body[0]).toHaveProperty('type');
 //             expect(response.body[0].type).toBe('Tiger');
 //     })
@@ -197,7 +225,7 @@ describe('GET /service/:id', () => {
 //         const response = await request(app)
 //             .patch('/service/47')
 //             .send({
-//                 id_type: 90
+//                 id_service: 90
 //             });
 
 //             expect(response.status).toBe(400);
