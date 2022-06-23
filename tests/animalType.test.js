@@ -93,6 +93,17 @@ describe('POST /animalType', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
+    test('returns error if animal type\'s id is null', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                id_type: undefined
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
     test('posts an animal type already inserted', async () => {
         const response = await request(app)
             .post('/animalType')
