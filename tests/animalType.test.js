@@ -215,7 +215,7 @@ describe('PATCH /animalType/:id', () => {
 
     test('returns no content if animal type\'s id doesnt exist', async () => {
         const response = await request(app)
-            .patch('/animalType/90')
+            .patch('/animalType/0')
             .send({
                 type: 'Tiger'
             });
