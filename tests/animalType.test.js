@@ -54,7 +54,7 @@ describe('GET /animalType/:id', () => {
     })
 
 
-});    
+})
 
 // Tests post route for animalType
 describe('POST /animalType', () => {
@@ -62,6 +62,7 @@ describe('POST /animalType', () => {
         const response = await request(app)
             .post('/animalType')
             .send({
+                id_type: '47',
                 type: 'Lion'
             });
 
@@ -161,4 +162,34 @@ describe('POST /animalType', () => {
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
+})
+
+// Tests delete route for animalType
+describe('DELETE /animalType/:id', () => {
+    test('deletes an animal type', async () => {
+        const response = await request(app)
+            .delete('/animalType/47');
+
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body.rows).toHaveLength(1);
+
+            expect(response.body.rows[0].type).toBe('Lion');
+    })
+
+    test('returns no content if animal type does not exist', async () => {
+        const response = await request(app)
+            .delete('/animalType/0');
+
+            expect(response.status).toBe(204);
+    })
+
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .delete('/animalType/a');
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
 })
