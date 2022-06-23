@@ -80,6 +80,9 @@ class Service {
         // Creates auxiliary list of fields to be updated
         let fields = []
         for (let key in data) {
+            if (key == 'id_service') {
+                return res.status(400).json("Cannot alter id")
+            }            
             if (data[key]) {
                 fields.push(`${key}='${data[key]}'`)
             } else {
@@ -94,7 +97,7 @@ class Service {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There are no service with id as ${id}`)
+                res.status(204).json(`There is no service with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
