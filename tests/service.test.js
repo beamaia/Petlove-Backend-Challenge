@@ -3,7 +3,7 @@ const app = require('../src/config/customExpress');
 const aux = require('../src/utils/utils');
 const db = require('../src/database/db')
 
-afterAll(() => db.end());
+afterAll(async () => await db.end());
 
 
 // Tests get route for service
@@ -194,13 +194,13 @@ describe('POST /service', () => {
         })
 })
 
-// // Tests patch route for service
+// Tests patch route for service
 // describe('PATCH /service/:id', () => {
-//     test('updates an animal type', async () => {
+//     test('updates a service', async () => {
 //         const response = await request(app)
-//             .patch('/service/47')
+//             .patch('/service/9')
 //             .send({
-//                 type: 'Tiger'
+//                 service_type: 'Tiger'
 //             });
 
 //             expect(response.status).toBe(200);
