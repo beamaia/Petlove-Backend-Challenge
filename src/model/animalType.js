@@ -78,7 +78,9 @@ class AnimalType {
         // Creates auxiliary list of fields to be updated
         let fields = []
         for (let key in data) {
-            
+            if (key == 'id_type') {
+                return res.status(400).json("Cannot alter id")
+            }
             if (data[key]) {
                 fields.push(`${key}='${data[key]}'`)
             } else {
