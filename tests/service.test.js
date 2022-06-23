@@ -269,32 +269,33 @@ describe('PATCH /service/:id', () => {
     })
 })
     
-// // Tests delete route for service
-// describe('DELETE /service/:id', () => {
-//     test('deletes an animal type', async () => {
-//         const response = await request(app)
-//             .delete('/service/47');
+// Tests delete route for service
+describe('DELETE /service/:id', () => {
+    test('deletes a service', async () => {
+        const response = await request(app)
+            .delete('/service/9');
 
-//             expect(response.status).toBe(200);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//             expect(response.body.rows).toHaveLength(1);
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body.rows).toHaveLength(1);
 
-//             expect(response.body.rows[0].type).toBe('Tiger');
-//     })
+            expect(response.body.rows[0].service_type).toBe('Urine exam');
+            expect(response.body.rows[0].price).toBe(100);
+    })
 
-//     test('returns no content if animal type does not exist', async () => {
-//         const response = await request(app)
-//             .delete('/service/0');
+    test('returns no content if service does not exist', async () => {
+        const response = await request(app)
+            .delete('/service/0');
 
-//             expect(response.status).toBe(204);
-//     })
+            expect(response.status).toBe(204);
+    })
 
-//     test('returns error if id is not a number', async () => {
-//         const response = await request(app)
-//             .delete('/service/a');
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .delete('/service/a');
 
-//             expect(response.status).toBe(400);
-//             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-//     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-// })
+})
