@@ -19,125 +19,105 @@ describe('POST /person', () => {
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
-            expect(response.body[0]).toHaveProperty('cpf');
-            expect(response.body[0]).toHaveProperty('full_name');
+            expect(response.body.rows[0]).toHaveProperty('cpf');
+            expect(response.body.rows[0]).toHaveProperty('full_name');
     })
 
-    // test('posts a new service without passing id', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             service_type: 'Tomography',
-    //             price: 350
-    //         });
+    test('returns error at attempt to post a new person without passing cpf', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({
+                cpf: '11111111111',
+                date_birth: '1999-01-31'
+            });
 
-    //         expect(response.status).toBe(201);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    //         expect(response.body.rows[0]).toHaveProperty('id_service');
-    //         expect(response.body.rows[0]).toHaveProperty('service_type');
-    //         expect(response.body.rows[0]).toHaveProperty('price');
+    test('returns error at attempt to post a new person without passing full_name', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({
+                full_name: 'Mr.Smiley',
+                date_birth: '1999-01-31'
+            });
 
-    //     // deletes the created service so it wont conflit to tests
-    //     const response_del = await request(app)
-    //         .delete(`/service/${response.body.rows[0].id_service}`)
-    // })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    // test('returns error if service is empty', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({});
+    test('returns error if person is empty', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({});
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    // test('returns error if service\'s price is null', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             service_type: 'Biopsy',
-    //             price: undefined
-    //         });
+    test('returns error if a person was already inserted', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+            });
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    // test('returns error if service\'s id is null', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             id_service: null,
-    //             service_type: 'Biopsy',
-    //             price: 90
-    //         });
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+    test('returns error if cpf is not a number', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111a',
+                full_name: 'Mr.Smiley',
+            });
 
-    // test('returns error if a service was already inserted', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             service_type: 'Grooming',
-    //             price: 80
-    //         });
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+    test('returns error if cpf doesnt have 11 digits', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111',
+                full_name: 'Mr.Smiley',
+            });
 
-    // test('returns error if id is already in use', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             id_service: 1,
-    //             service_type: 'Biopsy',
-    //             price: 90
-    //         });
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    //         expect(response.body.detail).toEqual('Key (id_service)=(1) already exists.');
-    // })
+    test('returns error if date_birth doesnt have YYYY-MM-DD format', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+                date_birth:"2000/01/20"
+            });
 
-    // test('returns error if id is not a number', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             id_service: 'a',
-    //             service_type: 'Biopsy',
-    //             price: 90
-    //         });
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+    test('returns error if postal code has more than 9 characters', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111',
+                full_name: 'Mr.Smiley',
+                postal_code: "320935803989"
+            });
 
-    // test('returns error if service has more than 50 caracters', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             service_type: 'B'+'iopsy'.repeat(10)
-    //         });
-
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
-
-    // test('returns error if service doesnt follow regex constraint', async () => {
-    //     const response = await request(app)
-    //         .post('/service')
-    //         .send({
-    //             service_type: 'biopsy',
-    //             price: 90
-    //         });
-
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    //     })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 })
 
 
