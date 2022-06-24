@@ -5,18 +5,121 @@ const db = require('../src/database/db')
 
 afterAll(() => db.end());
 
-
-// Tests get route for person
-describe('GET /person', () => {
-    test('returns every person', async () => {
+// Tests post route for service
+describe('POST /person', () => {
+    test('posts a new person passing id', async () => {
         const response = await request(app)
-            .get('/person');
-        
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(100);
-        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            .post('/person')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+                date_birth: '1999-01-31'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('cpf');
+            expect(response.body.rows[0]).toHaveProperty('full_name');
+    })
+
+    test('returns error at attempt to post a new person without passing cpf', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({
+                cpf: '11111111111',
+                date_birth: '1999-01-31'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to post a new person without passing full_name', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({
+                full_name: 'Mr.Smiley',
+                date_birth: '1999-01-31'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if person is empty', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({});
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if a person was already inserted', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+
+    test('returns error if cpf is not a number', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111a',
+                full_name: 'Mr.Smiley',
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if cpf doesnt have 11 digits', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111',
+                full_name: 'Mr.Smiley',
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if date_birth doesnt have YYYY-MM-DD format', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+                date_birth:"2000/01/20"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if postal code has more than 9 characters', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '1111111111',
+                full_name: 'Mr.Smiley',
+                postal_code: "320935803989"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 })
+
 
 // Tests get by id route for person
 describe('GET /person/:id', () => {
@@ -63,7 +166,6 @@ describe('GET /person/:id', () => {
 
 
 })
-
 
 // Tests get route to return a specific person's pets from database
 describe('GET /person/:id/animal', () => {
@@ -119,7 +221,6 @@ describe('GET /person/:id/animal', () => {
     })
 
 })
-
 
 // Tests to get a specific person's pets schedule from database
 describe('GET /person/:id/scheduleHistory', () => {
@@ -205,4 +306,28 @@ describe('GET /person/:id/schedule', () => {
 // router.get('/person/:id/scheduleHistory', function (req, res) {
 //     Person.getSchedule(req, res, 'history')
 // })
+
+// Tests get route for person
+describe('GET /person', () => {
+    test('returns every person', async () => {
+        const response = await request(app)
+            .get('/person');
+        
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(101);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
+
+// Tests delete route for person
+describe('DELETE /person', () => {
+    test('deletes person 11111111111', async () => {
+        const response = await request(app)
+            .delete('/person/11111111111');
+        
+        expect(response.status).toBe(200);
+        expect(response.body.rows).toHaveLength(1);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
 
