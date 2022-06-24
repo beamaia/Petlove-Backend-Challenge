@@ -3,7 +3,7 @@ const app = require('../src/config/customExpress')
 const aux = require('../src/utils/utils')
 const db = require('../src/database/db')
 
-// afterAll(async () => await db.end());
+afterAll(async () => await db.end());
 
 // Tests post route for service
 describe('POST /person', () => {
@@ -16,7 +16,6 @@ describe('POST /person', () => {
                 date_birth: '1999-01-31'
             });
             
-            console.log(response.body)
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
@@ -180,7 +179,7 @@ describe('GET /person/:id', () => {
             expect(response.body[0]).toHaveProperty('phone');
             expect(response.body[0].cpf).toBe('25631219101');
             expect(response.body[0].full_name).toBe('Antônio Freitas');
-            expect(response.body[0].date_birth).toContain('1993-07-02');
+            expect(response.body[0].date_birth).toContain('1993-07-03');
             expect(response.body[0].number).toBe(990);
             expect(response.body[0].road).toBe('Alameda Favela Dias');
             expect(response.body[0].city).toBe('Viana');
@@ -209,9 +208,9 @@ describe('GET /person/:id', () => {
 
 // Tests get route to return a specific person's pets from database
 describe('GET /person/:id/animal', () => {
-    test('returns persons with 91165531253 pets', async () => {
+    test('returns persons with cpf 12345678900 pets', async () => {
         const response = await request(app)
-            .get('/person/91165531253/animal');
+            .get('/person/12345678900/animal');
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveLength(1);
@@ -224,11 +223,11 @@ describe('GET /person/:id/animal', () => {
         expect(response.body[0]).toHaveProperty('date_birth');
 
         // Checks values
-        expect(response.body[0].id_animal).toBe(78);
-        expect(response.body[0].id_person).toBe('91165531253');
-        expect(response.body[0].id_type).toBe(4);
-        expect(response.body[0].name).toBe('Enzo');
-        expect(response.body[0].date_birth).toContain('2019-03-10');
+        expect(response.body[0].id_animal).toBe(151);
+        expect(response.body[0].id_person).toBe('12345678900');
+        expect(response.body[0].id_type).toBe(12);
+        expect(response.body[0].name).toBe('Fetch');
+        expect(response.body[0].date_birth).toContain('2019-03-12');
 
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
         
@@ -261,12 +260,12 @@ describe('GET /person/:id/animal', () => {
 
 // Tests to get a specific person's pets schedule from database
 describe('GET /person/:id/scheduleHistory', () => {
-    test('returns persons 76612908200 scheduled history', async () => {
+    test('returns persons 12345678900 scheduled history', async () => {
         const response = await request(app)
-            .get('/person/76612908200/scheduleHistory');
+            .get('/person/12345678900/scheduleHistory');
         
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(2);
+        expect(response.body).toHaveLength(1);
 
         // Checks if each element has property schedule #1
         expect(response.body[0]).toHaveProperty('id_schedule');
@@ -275,12 +274,11 @@ describe('GET /person/:id/scheduleHistory', () => {
         expect(response.body[0]).toHaveProperty('id_service');
         expect(response.body[0]).toHaveProperty('date_service');
 
-        expect(response.body[0].id_schedule).toBe(130);
-        expect(response.body[0].id_animal).toBe(146);
-        expect(response.body[0].id_person).toBe('76612908200');
-        expect(response.body[0].id_service).toBe(8);
-        expect(response.body[0].date_service).toBe('2021-09-01T15:30:00.000Z');
-
+        expect(response.body[0].id_schedule).toBe(201);
+        expect(response.body[0].id_animal).toBe(151);
+        expect(response.body[0].id_person).toBe('12345678900');
+        expect(response.body[0].id_service).toBe(3);
+        expect(response.body[0].date_service).toBe('2023-04-15T16:00:00.000Z');
 
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
@@ -312,10 +310,10 @@ describe('GET /person/:id/scheduleHistory', () => {
 describe('GET /person/:id/schedule', () => {
     test('returns person 81463743911 current schedule', async () => {
         const response = await request(app)
-            .get('/person/81463743911/schedule');
+            .get('/person/12345678900/schedule');
         
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(3);
+        expect(response.body).toHaveLength(1);
 
         // Checks if each element has property schedule #1
         expect(response.body[0]).toHaveProperty('id_schedule');
@@ -324,11 +322,11 @@ describe('GET /person/:id/schedule', () => {
         expect(response.body[0]).toHaveProperty('id_service');
         expect(response.body[0]).toHaveProperty('date_service');
 
-        expect(response.body[0].id_schedule).toBe(183);
-        expect(response.body[0].id_animal).toBe(11);
-        expect(response.body[0].id_person).toBe('81463743911');
-        expect(response.body[0].id_service).toBe(4);
-        expect(response.body[0].date_service).toBe('2023-03-03T18:00:00.000Z');
+        expect(response.body[0].id_schedule).toBe(201);
+        expect(response.body[0].id_animal).toBe(151);
+        expect(response.body[0].id_person).toBe('12345678900');
+        expect(response.body[0].id_service).toBe(3);
+        expect(response.body[0].date_service).toBe('2023-04-15T16:00:00.000Z');
 
 
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
@@ -350,7 +348,7 @@ describe('GET /person', () => {
             .get('/person');
         
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(101);
+        expect(response.body).toHaveLength(102);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 })
@@ -372,59 +370,46 @@ describe('PATCH /person/:id', () => {
             expect(response.body[0].full_name).toBe('Ana Maria Braga');
     })
 
-    // test('returns error if service is empty', async () => {
-    //     const response = await request(app)
-    //         .patch('/service/9')
-    //         .send({});
+    test('returns error if person is empty', async () => {
+        const response = await request(app)
+            .patch('/person/12345678900')
+            .send({});
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    // test('returns error if tries to change id', async () => {
-    //     const response = await request(app)
-    //         .patch('/service/9')
-    //         .send({
-    //             id_service: 0
-    //         });
+    test('returns error at attempt of changing cpf', async () => {
+        const response = await request(app)
+            .patch('/person/12345678900')
+            .send({
+                cpf: "12345678901"
+            });
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 
-    //         expect(response.body).toEqual('Cannot alter id');
-    // })
+    test('returns empty if tries to change person that doesnt exist', async () => {
+        const response = await request(app)
+            .patch('/person/12345678910')
+            .send({
+                full_name: "Tester"
+            });
 
-    // test('returns error if service name doesnt follows constraint', async () => {
-    //     const response = await request(app)
-    //         .patch('/service/9')
-    //         .send({
-    //             service_type: 'Urine Exam'
-    //         });
+            expect(response.status).toBe(204);
+    })
 
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+    test('returns error if persons cpf is not numeric', async () => {
+        const response = await request(app)
+            .patch('/person/1234567890a')
+            .send({
+                price: 80
+            });
 
-    // test('returns no content if service\'s id doesnt exist', async () => {
-    //     const response = await request(app)
-    //         .patch('/service/0')
-    //         .send({
-    //             price: 80
-    //         });
-
-    //         expect(response.status).toBe(204);
-    // })
-
-    // test('returns error if service id is not numeric', async () => {
-    //     const response = await request(app)
-    //         .patch('/service/a')
-    //         .send({
-    //             price: 80
-    //         });
-
-    //         expect(response.status).toBe(400);
-    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    // })
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
 })
 
 // Tests delete route for person
