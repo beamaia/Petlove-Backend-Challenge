@@ -3,7 +3,7 @@ const app = require('../src/config/customExpress')
 const aux = require('../src/utils/utils')
 const db = require('../src/database/db')
 
-afterAll(() => db.end());
+afterAll(async () => await db.end());
 
 // Tests post route for service
 describe('POST /person', () => {
