@@ -177,7 +177,7 @@ describe('POST /person', () => {
 describe('GET /person/:id', () => {
     test('returns a specific person', async () => {
         const response = await request(app)
-            .get('/person/25631219101');
+            .get('/person/12345678900');
 
             expect(response.status).toBe(200);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
@@ -190,14 +190,14 @@ describe('GET /person/:id', () => {
             expect(response.body[0]).toHaveProperty('city');
             expect(response.body[0]).toHaveProperty('postal_code');
             expect(response.body[0]).toHaveProperty('phone');
-            expect(response.body[0].cpf).toBe('25631219101');
-            expect(response.body[0].full_name).toBe('Antônio Freitas');
-            expect(response.body[0].date_birth).toContain('1993-07-04');
-            expect(response.body[0].number).toBe(990);
-            expect(response.body[0].road).toBe('Alameda Favela Dias');
-            expect(response.body[0].city).toBe('Viana');
-            expect(response.body[0].postal_code).toBe('32181960');
-            expect(response.body[0].phone).toBe('84 3794 0265');
+            expect(response.body[0].cpf).toBe('12345678900');
+            expect(response.body[0].full_name).toBe('Testador José');
+            expect(response.body[0].date_birth).toContain('2000-01-01');
+            expect(response.body[0].number).toBe(1);
+            expect(response.body[0].road).toBe('Rua Aprovacao');
+            expect(response.body[0].city).toBe('Notapolis');
+            expect(response.body[0].postal_code).toBe('10101-101');
+            expect(response.body[0].phone).toBe('(27)99999-9999');
     })
 
     test('returns error if person does not exist', async () => {
