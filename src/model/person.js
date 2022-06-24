@@ -38,7 +38,7 @@ class Person {
             if(error) {
                 return res.status(400).json(error);
             } else if (!results.rowCount) {
-                return res.status(204).json(`There is no person with cpf as ${id}`);
+                return res.status(404).json(`There is no person with cpf as ${id}`);
             } else {
                 return res.status(200).json(results.rows);
             }
@@ -64,7 +64,7 @@ class Person {
                 if(error) {
                     return res.status(400).json(error);
                 } else if (!results.rowCount) {
-                    return res.status(204).json(`There is no person with cpf as ${id}`);
+                    return res.status(404).json(`There is no person with cpf as ${id}`);
                 } else {
                     // If it does, the search for pets
                     const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
@@ -73,7 +73,7 @@ class Person {
                         if(error) {
                             return res.status(400).json(error);
                         } else if (!results.rowCount) {
-                            return res.status(204).json(`The person with cpf as ${id} has no pet`);
+                            return res.status(200).json(`The person with cpf as ${id} has no pet`);
                         } else {
                             return res.status(200).json(results.rows);
                         }
@@ -101,7 +101,7 @@ class Person {
             if(error) {
                 return res.status(400).json(error);
             } else if (!results.rowCount) {
-                return res.status(204).json(`There is no person with cpf as ${id}`);
+                return res.status(404).json(`There is no person with cpf as ${id}`);
             } else {
                 // Then search for pets
                 const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
@@ -224,7 +224,7 @@ class Person {
             if(error) {
                 return res.status(400).json(error)
             } else if (!results.rowCount) {
-                return res.status(204).json(`There is no person with cpf as ${id}`)
+                return res.status(404).json(`There is no person with cpf as ${id}`)
             } else {
                 return res.status(200).json(results.rows)
             }
@@ -249,7 +249,7 @@ class Person {
             if(error) {
                 return res.status(400).json(error)
             } else if (!results.rowCount) {
-                return res.status(204).json(`There is no person with cpf as ${id}`)
+                return res.status(404).json(`There is no person with cpf as ${id}`)
             } else {
                 return res.status(200).json(results)
             }

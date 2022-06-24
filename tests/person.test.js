@@ -187,12 +187,12 @@ describe('GET /person/:id', () => {
             expect(response.body[0].phone).toBe('84 3794 0265');
     })
 
-    test('returns empty if person does not exist', async () => {
+    test('returns error if person does not exist', async () => {
         const response = await request(app)
             .get('/person/0');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no person with cpf as 0");
     })
 
     test('returns error if cpf is not a number', async () => {
@@ -240,20 +240,20 @@ describe('GET /person/:id/animal', () => {
             expect(response.body).toEqual('Invalid Id');
     })
 
-    test('returns message if cpf doesnt exist', async () => {
+    test('returns error if person does not exist', async () => {
         const response = await request(app)
             .get('/person/22222222222/animal');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no person with cpf as 22222222222");
     })
 
     test('returns message if cpf doesnt have any pets', async () => {
         const response = await request(app)
             .get('/person/11111111111/animal');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual("The person with cpf as 11111111111 has no pet");
     })
 
 })
@@ -290,12 +290,12 @@ describe('GET /person/:id/scheduleHistory', () => {
             expect(response.body).toEqual('Invalid Id');
     })
 
-    test('returns message if cpf doesnt exist', async () => {
+    test('returns error if person does not exist', async () => {
         const response = await request(app)
             .get('/person/22222222222/scheduleHistory');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no person with cpf as 22222222222");
     })
 
     test('returns message if cpf doesnt have anything scheduled', async () => {
@@ -391,14 +391,14 @@ describe('PATCH /person/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns empty if tries to change person that doesnt exist', async () => {
+    test('returns error if tries to change person that doesnt exist', async () => {
         const response = await request(app)
             .patch('/person/12345678910')
             .send({
                 full_name: "Tester"
             });
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
     })
 
     test('returns error if persons cpf is not numeric', async () => {
@@ -424,12 +424,12 @@ describe('DELETE /person', () => {
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns no content if person does not exist', async () => {
+    test('returns error if person does not exist', async () => {
         const response = await request(app)
             .delete('/person/99999999999');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no person with cpf as 99999999999");
     })
 
     test('returns error if id is not a number', async () => {
