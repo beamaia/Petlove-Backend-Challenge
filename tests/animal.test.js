@@ -31,7 +31,7 @@ describe('GET /animal', () => {
             .get('/animal');
         
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(150);
+        expect(response.body).toHaveLength(151);
 
         })
 });    
