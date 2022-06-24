@@ -75,7 +75,7 @@ class Schedule {
      * @param {*} res 
      * @param {*} date can be 'history' or 'today' 
      */
-     get(req, res, date) {
+    get(req, res, date) {
         // Find period of schedule
         let sql;
 
@@ -93,7 +93,7 @@ class Schedule {
             if(error) {
                 res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no schedule :(`);
+                res.status(404).json(`There is no schedule :(`);
             } else {
                 res.status(200).json(results.rows);
             }
@@ -139,7 +139,7 @@ class Schedule {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no schedule with id as ${id}`)
+                res.status(404).json(`There is no schedule with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -164,7 +164,7 @@ class Schedule {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no schedule with id as ${id}`)
+                res.status(404).json(`There is no schedule with id as ${id}`)
             }
             else {
                 res.status(200).json(results.rows)

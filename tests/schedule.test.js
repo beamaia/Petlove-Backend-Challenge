@@ -146,9 +146,9 @@ describe('PATCH /schedule/:id', () => {
             });
         
         
-        // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Service cannot be changed, create a new schedule!");
     })
 
     test('returns error at attempt to change schedule id', async () => {
@@ -159,9 +159,9 @@ describe('PATCH /schedule/:id', () => {
             });
         
         
-        // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Id cannot be changed");
     })
 
     test('returns error at attempt to change animal id', async () => {
@@ -172,9 +172,9 @@ describe('PATCH /schedule/:id', () => {
             });
         
         
-        // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Pet cannot be changed, create a new schedule!");
     })
 
     test('returns error at attempt to change person', async () => {
@@ -188,6 +188,7 @@ describe('PATCH /schedule/:id', () => {
         // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Person cannot be changed, create a new schedule!");
     })
 
     test('returns error at attempt to change date_service to empty string', async () => {
@@ -201,6 +202,7 @@ describe('PATCH /schedule/:id', () => {
         // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("date_service cannot be empty");
     })
 
     test('returns error if schedule id has letters', async () => {
@@ -214,9 +216,10 @@ describe('PATCH /schedule/:id', () => {
         // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Invalid Id");
     })
 
-    test('returns empty object if schedule id doesnt exist', async () => {
+    test('returns error if schedule id doesnt exist', async () => {
         const response = await request(app)
             .patch('/schedule/2022')
             .send({
@@ -225,7 +228,8 @@ describe('PATCH /schedule/:id', () => {
         
         
         // Its not possible to check length since the seed uses the database random
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
+        expect(response.body).toBe("There is no schedule with id as 2022");
     })
 });    
 
@@ -237,6 +241,19 @@ describe('DELETE /schedule', () => {
 
         expect(response.status).toBe(200);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+        expect(response.body[0]).toHaveProperty("id_schedule")
+        expect(response.body[0]).toHaveProperty("id_person")
+        expect(response.body[0]).toHaveProperty("id_animal")
+        expect(response.body[0]).toHaveProperty("id_service")
+        expect(response.body[0]).toHaveProperty("date_service")
+        expect(response.body).toHaveLength(1)
+        
+        expect(response.body[0].id_schedule).toBe(202)
+        expect(response.body[0].id_person).toBe("12345678900")
+        expect(response.body[0].id_animal).toBe(151)
+        expect(response.body[0].id_service).toBe(4)
+        expect(response.body[0].date_service).toBe("2025-03-03T16:46:00.000Z")
     })
 
     test('returns error at attempt to deletes schedule with id with letters', async () => {
@@ -245,12 +262,14 @@ describe('DELETE /schedule', () => {
 
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toBe("Invalid Id");
     })
 
-    test('returns empty object at attempt to deletes schedule that doesnt exist', async () => {
+    test('returns error at attempt to deletes schedule that doesnt exist', async () => {
         const response = await request(app)
             .delete('/schedule/2022');
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
+        expect(response.body).toBe("There is no schedule with id as 2022");
     })
 });    
