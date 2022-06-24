@@ -34,6 +34,7 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqaul("Invalid CPF")
     })
 
     test('returns error at attempt to post a new person without passing cpf', async () => {
@@ -93,6 +94,8 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid CPF")
+
     })
 
     test('returns error if cpf doesnt have 11 digits', async () => {
@@ -105,6 +108,8 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid CPF")
+
     })
 
     test('returns error if date_birth doesnt have YYYY-MM-DD format', async () => {
@@ -118,6 +123,8 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid date format")
+
     })
 
     test('returns error if person is younger than 18', async () => {
@@ -131,6 +138,8 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid birth date"))
+
     })
 
     test('returns error if person is older than 140', async () => {
@@ -144,6 +153,8 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid birth date")
+
     })
 
     test('returns error if postal code has more than 9 characters', async () => {
@@ -157,6 +168,8 @@ describe('POST /person', () => {
             
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid postal code")
+
     })
 })
 
@@ -193,6 +206,7 @@ describe('GET /person/:id', () => {
 
             expect(response.status).toBe(404);
             expect(response.body).toEqual("There is no person with cpf as 0");
+
     })
 
     test('returns error if cpf is not a number', async () => {
@@ -378,6 +392,8 @@ describe('PATCH /person/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual({});
+
     })
 
     test('returns error at attempt of changing cpf', async () => {
@@ -389,6 +405,8 @@ describe('PATCH /person/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual();
+
     })
 
     test('returns error if tries to change person that doesnt exist', async () => {
@@ -399,6 +417,8 @@ describe('PATCH /person/:id', () => {
             });
 
             expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no person with cpf as 12345678910");
+
     })
 
     test('returns error if persons cpf is not numeric', async () => {
@@ -410,6 +430,8 @@ describe('PATCH /person/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid Id");
+
     })
 })
 
@@ -422,6 +444,18 @@ describe('DELETE /person', () => {
         expect(response.status).toBe(200);
         expect(response.body.rows).toHaveLength(1);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body).toHaveLength(1);
+        expect(response.body[0]).toHaveProperty('cpf');
+        expect(response.body[0]).toHaveProperty('full_name');
+        expect(response.body[0]).toHaveProperty('date_birth');
+        expect(response.body[0]).toHaveProperty('number');
+        expect(response.body[0]).toHaveProperty('road');
+        expect(response.body[0]).toHaveProperty('city');
+        expect(response.body[0]).toHaveProperty('postal_code');
+        expect(response.body[0]).toHaveProperty('phone');
+        expect(response.body[0].cpf).toBe('11111111111');
+        expect(response.body[0].full_name).toBe('Mr.Smiley');
+        expect(response.body[0].date_birth).toContain('1999-01-31');
     })
 
     test('returns error if person does not exist', async () => {
@@ -438,6 +472,8 @@ describe('DELETE /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid Id");
+
     })
 })
 
