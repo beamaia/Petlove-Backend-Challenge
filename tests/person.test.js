@@ -106,6 +106,32 @@ describe('POST /person', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
+    test('returns error if person is younger than 18', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111112',
+                full_name: 'Mr.Smiley',
+                date_birth:"2008-01-20"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if person is older than 140', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                cpf: '11111111112',
+                full_name: 'Mr.Smiley',
+                date_birth:"1808-01-20"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
     test('returns error if postal code has more than 9 characters', async () => {
         const response = await request(app)
             .post('/service')
@@ -194,15 +220,13 @@ describe('GET /person/:id/animal', () => {
         
     })
 
-    // TODO: post person beforehand
-    // test('returns empty if person does not exist', async () => {
-    //     const response = await request(app)
-    //         .get('/person/11111111111');
+    test('returns empty if person does not exist', async () => {
+        const response = await request(app)
+            .get('/person/22222222222');
 
-    //         expect(response.status).toBe(204);
-    //         expect(response.body).toEqual({});
-    //         expect(response.body).toEqual("The person with cpf as ${id} has no pet")
-    // })
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+    })
 
 
     test('returns error if cpf is not a number', async () => {
@@ -263,14 +287,13 @@ describe('GET /person/:id/scheduleHistory', () => {
             expect(response.body).toEqual({});
     })
 
-    // TODO must post animal before
-    // test('returns message if cpf doesnt have anything scheduled', async () => {
-    //     const response = await request(app)
-    //         .get('/person/22222222222/scheduleHistory');
+    test('returns message if cpf doesnt have anything scheduled', async () => {
+        const response = await request(app)
+            .get('/person/11111111111/scheduleHistory');
 
-    //         expect(response.status).toBe(204);
-    //         expect(response.body).toEqual({});
-    // })
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+    })
 })
 
 describe('GET /person/:id/schedule', () => {
@@ -299,14 +322,6 @@ describe('GET /person/:id/schedule', () => {
     })
 })
 
-// // Returns a specific person's pets from database
-// router.get('/person/:id/animal', Person.getPets)
-
-// // Returns a specific person's pets schedule history from database
-// router.get('/person/:id/scheduleHistory', function (req, res) {
-//     Person.getSchedule(req, res, 'history')
-// })
-
 // Tests get route for person
 describe('GET /person', () => {
     test('returns every person', async () => {
@@ -328,6 +343,22 @@ describe('DELETE /person', () => {
         expect(response.status).toBe(200);
         expect(response.body.rows).toHaveLength(1);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns no content if person does not exist', async () => {
+        const response = await request(app)
+            .delete('/person/99999999999');
+
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+    })
+
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .delete('/person/9999999999a');
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 })
 
