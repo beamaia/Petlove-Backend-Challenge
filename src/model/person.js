@@ -241,7 +241,7 @@ class Person {
             return res.status(400).json("Invalid Id");
         }
 
-        const sql = `DELETE FROM Person WHERE cpf='${id}'`
+        const sql = `DELETE FROM Person WHERE cpf='${id}' RETURNING *`
 
         db.query(sql, (error, results) => {
             if(error) {
