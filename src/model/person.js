@@ -12,9 +12,9 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                return res.status(400).json(error)
             } else {
-                res.status(200).json(results.rows)
+                return res.status(200).json(results.rows)
             }
         })
     }
@@ -35,11 +35,11 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error);
+                return res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`);
+                return res.status(204).json(`There is no person with cpf as ${id}`);
             } else {
-                res.status(200).json(results.rows);
+                return res.status(200).json(results.rows);
             }
         })
     }
@@ -53,28 +53,28 @@ class Person {
     getPets(req, res) {
             let id = req.params.id
             if (isNaN(id)) {
-                res.status(400).json("Invalid Id");
-            }
+                return res.status(400).json("Invalid Id");
+            } 
 
             // First see if person exists
             const sql = `SELECT * FROM Person WHERE cpf='${id}'`
 
             db.query(sql, (error, results) => {
                 if(error) {
-                    res.status(400).json(error);
+                    return res.status(400).json(error);
                 } else if (!results.rowCount) {
-                    res.status(204).json(`There is no person with cpf as ${id}`);
+                    return res.status(204).json(`There is no person with cpf as ${id}`);
                 } else {
                     // If it does, the search for pets
                     const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
                     
                     db.query(sql, (error, results) => {
                         if(error) {
-                            res.status(400).json(error);
+                            return res.status(400).json(error);
                         } else if (!results.rowCount) {
-                            res.status(204).json(`The person with cpf as ${id} has no pet`);
+                            return res.status(204).json(`The person with cpf as ${id} has no pet`);
                         } else {
-                            res.status(200).json(results.rows);
+                            return res.status(200).json(results.rows);
                         }
                     })
                 }
@@ -90,7 +90,7 @@ class Person {
         let id = req.params.id
             
         if (isNaN(id)) {
-            res.status(400).json("Invalid Id");
+            return res.status(400).json("Invalid Id");
         }
 
         // First see if person exists
@@ -98,9 +98,9 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error);
+                return res.status(400).json(error);
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`);
+                return res.status(204).json(`There is no person with cpf as ${id}`);
             } else {
                 // Then search for pets
                 const sql = `SELECT * FROM Animal WHERE id_person = '${id}'`
@@ -108,27 +108,27 @@ class Person {
                 db.query(sql, (error, results) => {
                     let sql_s;
                     if(error) {
-                        res.status(400).json(error);
+                        return res.status(400).json(error);
                     } else if (!results.rowCount) {
-                        res.status(204).json(`The person with cpf as ${id} has no pet`);
+                        return res.status(204).json(`The person with cpf as ${id} has no pet`);
                     } else {
                         // Finally, search for schedule
                         if (date == 'future') {
-                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service >= (SELECT NOW())`
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service >= (SELECT NOW()) ORDER BY date_service`
                         }
                         else if (date == 'history') {
-                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}'`
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' ORDER BY date_service`
                         } else {
-                            res.status(400).json("Invalid date");
+                            return res.status(400).json("Invalid date");
                         }
                         
                         db.query(sql_s, (error, results) => {
                             if(error) {
-                                res.status(400).json(error);
+                                return res.status(400).json(error);
                             } else if (!results.rowCount) {
-                                res.status(204).json(`The person with cpf as ${id} has no ${date} schedule`);
+                                return res.status(204).json(`The person with cpf as ${id} has no ${date} schedule`);
                             } else {
-                                res.status(200).json(results.rows);
+                                return res.status(200).json(results.rows);
                             }
                         })                                
                     }
@@ -181,9 +181,9 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                return res.status(400).json(error)
             } else {
-                res.status(201).json(results)
+                return res.status(201).json(results)
             }
         })          
     }    
@@ -220,11 +220,11 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                return res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`)
+                return res.status(204).json(`There is no person with cpf as ${id}`)
             } else {
-                res.status(200).json(results.rows)
+                return res.status(200).json(results.rows)
             }
         })
     }
@@ -245,11 +245,11 @@ class Person {
 
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error)
+                return res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no person with cpf as ${id}`)
+                return res.status(204).json(`There is no person with cpf as ${id}`)
             } else {
-                res.status(200).json(results)
+                return res.status(200).json(results)
             }
         })
     }
