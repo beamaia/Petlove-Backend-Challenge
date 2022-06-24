@@ -65,6 +65,8 @@ class Animal {
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error);
+            } else if (!results.rowCount) {
+                res.status(404).json(`There is no animal with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -109,7 +111,7 @@ class Animal {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There are no animal with id as ${id}`)
+                res.status(404).json(`There is no animal with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -120,8 +122,8 @@ class Animal {
      * Deletes an animal from database
      * @param {*} req request containing animal's id
      * @param {*} res
-     **/ 
-     delete(req, res) {
+    **/ 
+    delete(req, res) {
         let id = req.params.id
 
         if (isNaN(id)) {
@@ -134,7 +136,7 @@ class Animal {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no animal with id as ${id}`)
+                res.status(404).json(`There is no animal with id as ${id}`)
             } else {
                 res.status(200).json(results)
             }
@@ -169,28 +171,38 @@ class Animal {
         if (isNaN(id)) {
             return res.status(400).json("Invalid Id");
         }
-
-        let sql = ""
-
-        if (date === 'future') {
-            sql = `SELECT * FROM Schedule WHERE id_animal = '${id}' AND date_service >= (SELECT NOW())`
-        }
-        else if (date === 'history') {
-            sql = `SELECT * FROM Schedule WHERE id_animal = '${id}'`
-        } else {
-            return res.status(400).json("Invalid date");
-        }
         
+        // First search for the animal
+        const sql = `SELECT * FROM Animal WHERE id_animal='${id}'`
+
         db.query(sql, (error, results) => {
             if(error) {
-                res.status(400).json(error);
-            // } else if (!results.rowCount) {
-            //     res.status(204).json(`The animal with id as ${id} has no ${date} schedule`);
+                res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(404).json(`There is no animal with id as ${id}`)
             } else {
-                res.status(200).json(results.rows);
-            }
-        })                                
-    }       
+                // Then search for the animal's schedule
+                let sql_schedule = ""
+
+                if (date === 'future') {
+                    sql_schedule = `SELECT * FROM Schedule WHERE id_animal = '${id}' AND date_service >= (SELECT NOW())`
+                }
+                else if (date === 'history') {
+                    sql_schedule = `SELECT * FROM Schedule WHERE id_animal = '${id}'`
+                } else {
+                    return res.status(400).json("Invalid date");
+                }
+                
+                db.query(sql_schedule, (error, results) => {
+                    if(error) {
+                        res.status(400).json(error);
+                    } else {
+                        res.status(200).json(results.rows);
+                    }
+                }) 
+            }                
+        })               
+    }
     
 }
 
