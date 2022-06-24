@@ -6,9 +6,6 @@ const Animal = require('../model/animal')
 // Adds a new animal
 router.post('/animal', Animal.create)
 
-// Returns a specific animal from database
-router.get('/animal/:id', Animal.get)
-
 // Updates an animal by id
 router.patch('/animal/:id', Animal.update)
 
@@ -17,6 +14,9 @@ router.delete('/animal/:id', Animal.delete)
 
 // Returns all animals from database
 router.get('/animal', Animal.getAll)
+
+// Returns a specific animal from database
+router.get('/animal/:id', Animal.get)
 
 // Returns a specific animals' schedule from database
 router.get('/animal/:id/schedule', function (req, res) {
