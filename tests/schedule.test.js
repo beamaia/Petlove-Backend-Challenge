@@ -92,13 +92,27 @@ describe('POST /schedule', () => {
 
 // Tests get route for schedule
 describe('GET /schedule', () => {
-    test('returns all schedule', async () => {
+    test('returns all current schedule', async () => {
         const response = await request(app)
             .get('/schedule');
         
 
         // Its not possible to check length since the seed uses the database random
         expect(response.status).toBe(200);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+});    
+
+// Tests get route for scheduleHistory
+describe('GET /scheduleHistory', () => {
+    test('returns all current schedule', async () => {
+        const response = await request(app)
+            .get('/scheduleHistory');
+        
+
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(202)
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 });    
@@ -110,7 +124,6 @@ describe('DELETE /schedule', () => {
             .delete('/schedule/202');
 
         expect(response.status).toBe(200);
-        console.log(response)
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 });    
