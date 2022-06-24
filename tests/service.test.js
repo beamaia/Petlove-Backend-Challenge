@@ -60,23 +60,6 @@ describe('GET /service/:id', () => {
 
 // Tests post route for service
 describe('POST /service', () => {
-    test('posts a new service passing id', async () => {
-        const response = await request(app)
-            .post('/service')
-            .send({
-                id_service: '9',
-                service_type: 'Urine exm',
-                price: 110
-            });
-
-            expect(response.status).toBe(201);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-
-            expect(response.body.rows[0]).toHaveProperty('id_service');
-            expect(response.body.rows[0]).toHaveProperty('service_type');
-            expect(response.body.rows[0]).toHaveProperty('price');
-    })
-
     test('posts a new service without passing id', async () => {
         const response = await request(app)
             .post('/service')
@@ -85,6 +68,7 @@ describe('POST /service', () => {
                 price: 350
             });
 
+            console.log(response.body);
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
@@ -95,6 +79,23 @@ describe('POST /service', () => {
         // deletes the created service so it wont conflit to tests
         const response_del = await request(app)
             .delete(`/service/${response.body.rows[0].id_service}`)
+    })
+    
+    test('posts a new service passing id', async () => {
+        const response = await request(app)
+            .post('/service')
+            .send({
+                id_service: '10',
+                service_type: 'Urine exm',
+                price: 110
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('id_service');
+            expect(response.body.rows[0]).toHaveProperty('service_type');
+            expect(response.body.rows[0]).toHaveProperty('price');
     })
 
     test('returns error if service is empty', async () => {
@@ -198,7 +199,7 @@ describe('POST /service', () => {
 describe('PATCH /service/:id', () => {
     test('updates a service', async () => {
         const response = await request(app)
-            .patch('/service/9')
+            .patch('/service/10')
             .send({
                 service_type: 'Urine exam',
                 price: 100
@@ -216,7 +217,7 @@ describe('PATCH /service/:id', () => {
 
     test('returns error if service is empty', async () => {
         const response = await request(app)
-            .patch('/service/9')
+            .patch('/service/10')
             .send({});
 
             expect(response.status).toBe(400);
@@ -225,7 +226,7 @@ describe('PATCH /service/:id', () => {
 
     test('returns error if tries to change id', async () => {
         const response = await request(app)
-            .patch('/service/9')
+            .patch('/service/10')
             .send({
                 id_service: 0
             });
@@ -238,7 +239,7 @@ describe('PATCH /service/:id', () => {
 
     test('returns error if service name doesnt follows constraint', async () => {
         const response = await request(app)
-            .patch('/service/9')
+            .patch('/service/10')
             .send({
                 service_type: 'Urine Exam'
             });
@@ -273,7 +274,7 @@ describe('PATCH /service/:id', () => {
 describe('DELETE /service/:id', () => {
     test('deletes a service', async () => {
         const response = await request(app)
-            .delete('/service/9');
+            .delete('/service/10');
 
             expect(response.status).toBe(200);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
