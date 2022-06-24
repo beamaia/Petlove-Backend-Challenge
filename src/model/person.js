@@ -176,9 +176,8 @@ class Person {
             }
         }
 
-        const sql = `INSERT INTO Person (${fields_atr.join(', ')}) VALUES (${fields_val.join(', ')})`
+        const sql = `INSERT INTO Person (${fields_atr.join(', ')}) VALUES (${fields_val.join(', ')}) RETURNING *`
         
-
         db.query(sql, (error, results) => {
             if(error) {
                 return res.status(400).json(error)
