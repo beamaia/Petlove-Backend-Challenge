@@ -122,7 +122,7 @@ describe('GET /animal/:id/scheduleHistory', () => {
 
             expect(response.status).toBe(404);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual('Animal not found');
+            expect(response.body).toEqual('There is no animal with id as 0');
     })
 
     test('returns empty if pet doesnt have anything scheduled', async () => {
