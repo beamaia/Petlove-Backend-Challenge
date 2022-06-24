@@ -114,10 +114,10 @@ class Person {
                     } else {
                         // Finally, search for schedule
                         if (date == 'future') {
-                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service >= (SELECT NOW())`
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' AND date_service >= (SELECT NOW()) ORDER BY date_service`
                         }
                         else if (date == 'history') {
-                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}'`
+                            sql_s = `SELECT * FROM Schedule WHERE id_person = '${id}' ORDER BY date_service`
                         } else {
                             return res.status(400).json("Invalid date");
                         }
