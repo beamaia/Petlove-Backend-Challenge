@@ -138,7 +138,7 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid birth date"))
+            expect(response.body).toEqual("Invalid birth date")
 
     })
 
