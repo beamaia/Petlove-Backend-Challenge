@@ -163,7 +163,6 @@ class Person {
                 }
             } 
             if (key == 'date_birth') {
-                console.log(data.date_birth)
                 if (data.date_birth && (aux.getAge(data.date_birth) < 18 || aux.getAge(data.date_birth) > 140)) {
                     return res.status(400).json("Invalid birth date")
                 } else if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
