@@ -58,22 +58,6 @@ describe('GET /animalType/:id', () => {
 
 // Tests post route for animalType
 describe('POST /animalType', () => {
-    test('posts a new animal type passing id', async () => {
-        const response = await request(app)
-            .post('/animalType')
-            .send({
-                id_type: '47',
-                type: 'Lion'
-            });
-
-            expect(response.status).toBe(201);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-
-            expect(response.body.rows[0]).toHaveProperty('id_type');
-            expect(response.body.rows[0]).toHaveProperty('type');
-            expect(response.body.rows[0].type).toBe('Lion');
-    })
-
     test('posts a new animal type without passing id', async () => {
         const response = await request(app)
             .post('/animalType')
@@ -90,7 +74,24 @@ describe('POST /animalType', () => {
         // deletes the created service so it wont conflit to tests
         const response_del = await request(app)
             .delete(`/animalType/${response.body.rows[0].id_type}`)
-    })    
+    })  
+
+    test('posts a new animal type passing id', async () => {
+        const response = await request(app)
+            .post('/animalType')
+            .send({
+                id_type: '48',
+                type: 'Lion'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.rows[0]).toHaveProperty('id_type');
+            expect(response.body.rows[0]).toHaveProperty('type');
+            expect(response.body.rows[0].type).toBe('Lion');
+    })
+
 
     test('returns error if animal type is empty', async () => {
         const response = await request(app)
@@ -187,7 +188,7 @@ describe('POST /animalType', () => {
 describe('PATCH /animalType/:id', () => {
     test('updates an animal type', async () => {
         const response = await request(app)
-            .patch('/animalType/47')
+            .patch('/animalType/48')
             .send({
                 type: 'Tiger'
             });
@@ -203,7 +204,7 @@ describe('PATCH /animalType/:id', () => {
 
     test('returns error if animal type is empty', async () => {
         const response = await request(app)
-            .patch('/animalType/47')
+            .patch('/animalType/48')
             .send({});
 
             expect(response.status).toBe(400);
@@ -212,7 +213,7 @@ describe('PATCH /animalType/:id', () => {
 
     test('returns error if tries change id', async () => {
         const response = await request(app)
-            .patch('/animalType/47')
+            .patch('/animalType/48')
             .send({
                 id_type: 90
             });
@@ -225,7 +226,7 @@ describe('PATCH /animalType/:id', () => {
 
     test('returns error if animal type doesnt follows constraint', async () => {
         const response = await request(app)
-            .patch('/animalType/47')
+            .patch('/animalType/48')
             .send({
                 type: 'lion'
             });
@@ -260,7 +261,7 @@ describe('PATCH /animalType/:id', () => {
 describe('DELETE /animalType/:id', () => {
     test('deletes an animal type', async () => {
         const response = await request(app)
-            .delete('/animalType/47');
+            .delete('/animalType/48');
 
             expect(response.status).toBe(200);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');

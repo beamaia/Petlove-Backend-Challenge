@@ -13,6 +13,8 @@ PERSON_SIZE = 100
 ANIMAL_SIZE = 150
 SCHEDULE_SIZE = 200
 
+
+
 def create_tables(cur:psycopg2.extensions.cursor) -> None:
     sql_person = """CREATE TABLE person (
                         cpf varchar(11) PRIMARY KEY,
@@ -294,6 +296,27 @@ def insert_tables(conn:psycopg2.extensions.connection) -> None:
                 conn.close()
                 quit()
             
+def set_seed(conn:psycopg2.extensions.connection) -> None:
+    """
+    set BD's seed
+            Parameter:
+                `conn` (psycopg2.extensions.connection): connection to the db
+            Return:
+                `None`
+    """
+        
+    with conn:
+        with conn.cursor() as cur:
+            print('Setting seed...')
+
+            try:
+                cur.execute('SELECT setseed(0.5);')
+            except Exception as e:
+                print('Problem with connection, closing script...')
+                print(e)
+                cur.close()
+                conn.close()
+                quit()
 
 def select_random(curr:psycopg2.extensions.cursor, table_name:str, column_name:str) -> list[str]:
     """
@@ -377,6 +400,8 @@ if __name__ == "__main__":
     
     # Create tables
     insert_tables(conn)
+
+    set_seed(conn)
 
     # Insert values
     insert_person(conn)

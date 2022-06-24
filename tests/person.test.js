@@ -332,10 +332,11 @@ describe('GET /person/:id/schedule', () => {
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
+
     test('returns message if cpf doesnt have anything scheduled', async () => {
         const response = await request(app)
-            .get('/person/74407850905/schedule');
-
+            .get('/person/28138552030/schedule');
+            
             expect(response.status).toBe(204);
             expect(response.body).toEqual({});
     })

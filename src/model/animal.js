@@ -65,8 +65,6 @@ class Animal {
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error);
-            } else if (!results.rowCount) {
-                res.status(204).json(`There is no animal with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -169,7 +167,7 @@ class Animal {
         let id = req.params.id
             
         if (isNaN(id)) {
-            res.status(400).json("Invalid Id");
+            return res.status(400).json("Invalid Id");
         }
 
         let sql = ""
@@ -180,14 +178,14 @@ class Animal {
         else if (date === 'history') {
             sql = `SELECT * FROM Schedule WHERE id_animal = '${id}'`
         } else {
-            res.status(400).json("Invalid date");
+            return res.status(400).json("Invalid date");
         }
         
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error);
-            } else if (!results.rowCount) {
-                res.status(204).json(`The animal with id as ${id} has no ${date} schedule`);
+            // } else if (!results.rowCount) {
+            //     res.status(204).json(`The animal with id as ${id} has no ${date} schedule`);
             } else {
                 res.status(200).json(results.rows);
             }
