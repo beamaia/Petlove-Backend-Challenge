@@ -37,16 +37,16 @@ describe('GET /service/:id', () => {
             expect(response.body[0].price).toBe(65);
     })
 
-    test('returns empty if animal type does not exist', async () => {
+    test('returns error if service does not exist', async () => {
         const response = await request(app)
             .get('/service/0');
 
-            expect(response.status).toBe(200);
+            expect(response.status).toBe(404);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual([]);
+            expect(response.body).toBe(`There is no service with id as 0`);
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .get('/service/a');
 
@@ -248,14 +248,16 @@ describe('PATCH /service/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns no content if service\'s id doesnt exist', async () => {
+    test('returns error if service\'s id doesnt exist', async () => {
         const response = await request(app)
             .patch('/service/0')
             .send({
                 price: 80
             });
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no service with id as 0`);
     })
 
     test('returns error if service id is not numeric', async () => {
@@ -284,11 +286,13 @@ describe('DELETE /service/:id', () => {
             expect(response.body.rows[0].price).toBe(100);
     })
 
-    test('returns no content if service does not exist', async () => {
+    test('returns error if service does not exist', async () => {
         const response = await request(app)
             .delete('/service/0');
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no service with id as 0`);
     })
 
     test('returns error if id is not a number', async () => {
