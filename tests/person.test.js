@@ -3,7 +3,7 @@ const app = require('../src/config/customExpress')
 const aux = require('../src/utils/utils')
 const db = require('../src/database/db')
 
-afterAll(async () => await db.end());
+// afterAll(async () => await db.end());
 
 // Tests post route for service
 describe('POST /person', () => {
@@ -15,12 +15,26 @@ describe('POST /person', () => {
                 full_name: 'Mr.Smiley',
                 date_birth: '1999-01-31'
             });
-
+            
+            console.log(response.body)
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
             expect(response.body.rows[0]).toHaveProperty('cpf');
             expect(response.body.rows[0]).toHaveProperty('full_name');
+    })
+
+    test('posts a new person passing empty id', async () => {
+        const response = await request(app)
+            .post('/person')
+            .send({
+                cpf: '',
+                full_name: 'Mr.Smiley',
+                date_birth: '1999-01-31'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
     test('returns error at attempt to post a new person without passing cpf', async () => {
@@ -34,6 +48,7 @@ describe('POST /person', () => {
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
+    
 
     test('returns error at attempt to post a new person without passing full_name', async () => {
         const response = await request(app)
@@ -58,7 +73,7 @@ describe('POST /person', () => {
 
     test('returns error if a person was already inserted', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
                 cpf: '11111111111',
                 full_name: 'Mr.Smiley',
@@ -71,7 +86,7 @@ describe('POST /person', () => {
 
     test('returns error if cpf is not a number', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
                 cpf: '1111111111a',
                 full_name: 'Mr.Smiley',
@@ -83,7 +98,7 @@ describe('POST /person', () => {
 
     test('returns error if cpf doesnt have 11 digits', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
                 cpf: '1111111111',
                 full_name: 'Mr.Smiley',
@@ -95,9 +110,9 @@ describe('POST /person', () => {
 
     test('returns error if date_birth doesnt have YYYY-MM-DD format', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
-                cpf: '11111111111',
+                cpf: '11111111113',
                 full_name: 'Mr.Smiley',
                 date_birth:"2000/01/20"
             });
@@ -108,7 +123,7 @@ describe('POST /person', () => {
 
     test('returns error if person is younger than 18', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
                 cpf: '11111111112',
                 full_name: 'Mr.Smiley',
@@ -121,7 +136,7 @@ describe('POST /person', () => {
 
     test('returns error if person is older than 140', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
                 cpf: '11111111112',
                 full_name: 'Mr.Smiley',
@@ -134,18 +149,17 @@ describe('POST /person', () => {
 
     test('returns error if postal code has more than 9 characters', async () => {
         const response = await request(app)
-            .post('/service')
+            .post('/person')
             .send({
-                cpf: '1111111111',
+                cpf: '11111111112',
                 full_name: 'Mr.Smiley',
                 postal_code: "320935803989"
             });
-
+            
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 })
-
 
 // Tests get by id route for person
 describe('GET /person/:id', () => {
@@ -220,15 +234,6 @@ describe('GET /person/:id/animal', () => {
         
     })
 
-    test('returns empty if person does not exist', async () => {
-        const response = await request(app)
-            .get('/person/22222222222');
-
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
-    })
-
-
     test('returns error if cpf is not a number', async () => {
         const response = await request(app)
             .get('/person/a/animal');
@@ -239,6 +244,14 @@ describe('GET /person/:id/animal', () => {
     test('returns message if cpf doesnt exist', async () => {
         const response = await request(app)
             .get('/person/22222222222/animal');
+
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+    })
+
+    test('returns message if cpf doesnt have any pets', async () => {
+        const response = await request(app)
+            .get('/person/11111111111/animal');
 
             expect(response.status).toBe(204);
             expect(response.body).toEqual({});
@@ -320,6 +333,14 @@ describe('GET /person/:id/schedule', () => {
 
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
+
+    test('returns message if cpf doesnt have anything scheduled', async () => {
+        const response = await request(app)
+            .get('/person/74407850905/schedule');
+
+            expect(response.status).toBe(204);
+            expect(response.body).toEqual({});
+    })
 })
 
 // Tests get route for person
@@ -332,6 +353,78 @@ describe('GET /person', () => {
         expect(response.body).toHaveLength(101);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
+})
+
+// Tests patch route for person
+describe('PATCH /person/:id', () => {
+    test('updates a person', async () => {
+        const response = await request(app)
+            .patch('/person/34749795425')
+            .send({
+                full_name:"Ana Maria Braga"
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toHaveLength(1);
+
+            expect(response.body[0]).toHaveProperty('full_name');
+            expect(response.body[0].full_name).toBe('Ana Maria Braga');
+    })
+
+    // test('returns error if service is empty', async () => {
+    //     const response = await request(app)
+    //         .patch('/service/9')
+    //         .send({});
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if tries to change id', async () => {
+    //     const response = await request(app)
+    //         .patch('/service/9')
+    //         .send({
+    //             id_service: 0
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+    //         expect(response.body).toEqual('Cannot alter id');
+    // })
+
+    // test('returns error if service name doesnt follows constraint', async () => {
+    //     const response = await request(app)
+    //         .patch('/service/9')
+    //         .send({
+    //             service_type: 'Urine Exam'
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns no content if service\'s id doesnt exist', async () => {
+    //     const response = await request(app)
+    //         .patch('/service/0')
+    //         .send({
+    //             price: 80
+    //         });
+
+    //         expect(response.status).toBe(204);
+    // })
+
+    // test('returns error if service id is not numeric', async () => {
+    //     const response = await request(app)
+    //         .patch('/service/a')
+    //         .send({
+    //             price: 80
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
 })
 
 // Tests delete route for person
