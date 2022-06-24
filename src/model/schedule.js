@@ -83,7 +83,7 @@ class Schedule {
             sql = `SELECT * FROM Schedule WHERE date_service >= (SELECT NOW())`
         }
         else if (date == 'history') {
-            sql = `SELECT * FROM Schedule WHERE date_service < (SELECT NOW())`
+            sql = `SELECT * FROM Schedule`
         }
         else {
             res.status(400).json("Invalid date");
