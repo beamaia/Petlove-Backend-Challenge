@@ -35,13 +35,13 @@ describe('GET /animalType/:id', () => {
             expect(response.body[0].type).toBe('Dog');
     })
 
-    test('returns empty if animal type does not exist', async () => {
+    test('returns error if animal type does not exist', async () => {
         const response = await request(app)
             .get('/animalType/0');
 
-            expect(response.status).toBe(200);
+            expect(response.status).toBe(404);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual([]);
+            expect(response.body).toEqual(`There is no animal type with id as 0`);
     })
 
     test('returns error if id is not a number', async () => {
@@ -235,14 +235,16 @@ describe('PATCH /animalType/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns no content if animal type\'s id doesnt exist', async () => {
+    test('returns error if animal type\'s id doesnt exist', async () => {
         const response = await request(app)
             .patch('/animalType/0')
             .send({
                 type: 'Tiger'
             });
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no animal type with id as 0`);
     })
 
     test('returns error if animal type id is not numeric', async () => {
@@ -270,11 +272,13 @@ describe('DELETE /animalType/:id', () => {
             expect(response.body.rows[0].type).toBe('Tiger');
     })
 
-    test('returns no content if animal type does not exist', async () => {
+    test('returns error if animal type does not exist', async () => {
         const response = await request(app)
             .delete('/animalType/0');
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no animal type with id as 0`);
     })
 
     test('returns error if id is not a number', async () => {

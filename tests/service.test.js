@@ -37,16 +37,16 @@ describe('GET /service/:id', () => {
             expect(response.body[0].price).toBe(65);
     })
 
-    test('returns empty if animal type does not exist', async () => {
+    test('returns error if service does not exist', async () => {
         const response = await request(app)
             .get('/service/0');
 
-            expect(response.status).toBe(200);
+            expect(response.status).toBe(404);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual([]);
+            expect(response.body).toBe(`There is no service with id as 0`);
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .get('/service/a');
 
@@ -158,7 +158,7 @@ describe('POST /service', () => {
             expect(response.body.detail).toEqual('Key (id_service)=(1) already exists.');
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .post('/service')
             .send({
@@ -224,7 +224,7 @@ describe('PATCH /service/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns error if tries to change id', async () => {
+    test('returns error if tries to change service\'s id', async () => {
         const response = await request(app)
             .patch('/service/10')
             .send({
@@ -248,14 +248,16 @@ describe('PATCH /service/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns no content if service\'s id doesnt exist', async () => {
+    test('returns error if service\'s id doesnt exist', async () => {
         const response = await request(app)
             .patch('/service/0')
             .send({
                 price: 80
             });
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no service with id as 0`);
     })
 
     test('returns error if service id is not numeric', async () => {
@@ -284,14 +286,16 @@ describe('DELETE /service/:id', () => {
             expect(response.body.rows[0].price).toBe(100);
     })
 
-    test('returns no content if service does not exist', async () => {
+    test('returns error if service does not exist', async () => {
         const response = await request(app)
             .delete('/service/0');
 
-            expect(response.status).toBe(204);
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual(`There is no service with id as 0`);
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .delete('/service/a');
 

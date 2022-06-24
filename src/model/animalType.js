@@ -53,6 +53,8 @@ class AnimalType {
         db.query(sql, (error, results) => {
             if(error) {
                 res.status(400).json(error)
+            } else if (!results.rowCount) {
+                res.status(404).json(`There is no animal type with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -95,7 +97,7 @@ class AnimalType {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There are no animal type with id as ${id}`)
+                res.status(404).json(`There is no animal type with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
@@ -120,7 +122,7 @@ class AnimalType {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(204).json(`There is no animal type with id_type as ${id}`)
+                res.status(404).json(`There is no animal type with id as ${id}`)
             } else {
                 res.status(200).json(results)
             }
