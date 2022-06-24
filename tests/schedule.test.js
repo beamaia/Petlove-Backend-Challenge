@@ -215,6 +215,18 @@ describe('PATCH /schedule/:id', () => {
         expect(response.status).toBe(400);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
+
+    test('returns empty object if schedule id doesnt exist', async () => {
+        const response = await request(app)
+            .patch('/schedule/2022')
+            .send({
+                date_service: "2025-03-03 13:47"
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(204);
+    })
 });    
 
 // Tests post route for schedule
@@ -225,5 +237,20 @@ describe('DELETE /schedule', () => {
 
         expect(response.status).toBe(200);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to deletes schedule with id with letters', async () => {
+        const response = await request(app)
+            .delete('/schedule/202a');
+
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns empty object at attempt to deletes schedule that doesnt exist', async () => {
+        const response = await request(app)
+            .delete('/schedule/2022');
+
+        expect(response.status).toBe(204);
     })
 });    
