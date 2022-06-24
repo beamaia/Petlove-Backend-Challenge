@@ -327,6 +327,17 @@ def set_localtime(conn:psycopg2.extensions.connection) -> None:
             sql = "SET TIME ZONE 'Brazil/East';"
             cur.execute(sql)
 
+def insert_hard_values(conn:psycopg2.extensions.connection) -> None:
+    with conn:
+        with conn.cursor() as cur:
+            sql_person = "INSERT INTO person (cpf, full_name, date_birth, number, road, city, postal_code, phone) VALUES ('12345678900', 'Testador José', '2000-01-01', 1, 'Rua Aprovacao', 'Notapolis', '10101-101', '(27)99999-9999')"
+            sql_animal = "INSERT INTO animal (id_person, id_type, name, date_birth) VALUES ('12345678900', '12', 'Fetch', '2019-03-12')"
+            sql_schedule = "INSERT INTO schedule (id_person, id_animal, id_service, date_service) VALUES ('12345678900', '151', '3', '2023-04-15 13:00')"
+
+            cur.execute(sql_person)
+            cur.execute(sql_animal)
+            cur.execute(sql_schedule)
+
 if __name__ == "__main__":
 
     # connects to the bd
@@ -376,4 +387,7 @@ if __name__ == "__main__":
     # insert_animal(conn)
     insert_schedule(conn)
 
+    # Insert raw values
+    insert_hard_values(conn)
+    
     conn.close()
