@@ -158,7 +158,7 @@ describe('POST /service', () => {
             expect(response.body.detail).toEqual('Key (id_service)=(1) already exists.');
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .post('/service')
             .send({
@@ -224,7 +224,7 @@ describe('PATCH /service/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns error if tries to change id', async () => {
+    test('returns error if tries to change service\'s id', async () => {
         const response = await request(app)
             .patch('/service/10')
             .send({
@@ -295,7 +295,7 @@ describe('DELETE /service/:id', () => {
             expect(response.body).toEqual(`There is no service with id as 0`);
     })
 
-    test('returns error if id is not a number', async () => {
+    test('returns error if service\'s id is not a number', async () => {
         const response = await request(app)
             .delete('/service/a');
 
