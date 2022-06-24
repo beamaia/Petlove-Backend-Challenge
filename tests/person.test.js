@@ -5,18 +5,141 @@ const db = require('../src/database/db')
 
 afterAll(() => db.end());
 
-
-// Tests get route for person
-describe('GET /person', () => {
-    test('returns every person', async () => {
+// Tests post route for service
+describe('POST /person', () => {
+    test('posts a new person passing id', async () => {
         const response = await request(app)
-            .get('/person');
-        
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(100);
-        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            .post('/person')
+            .send({
+                cpf: '11111111111',
+                full_name: 'Mr.Smiley',
+                date_birth: '1999-01-31'
+            });
+
+            expect(response.status).toBe(201);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body[0]).toHaveProperty('cpf');
+            expect(response.body[0]).toHaveProperty('full_name');
     })
+
+    // test('posts a new service without passing id', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             service_type: 'Tomography',
+    //             price: 350
+    //         });
+
+    //         expect(response.status).toBe(201);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+    //         expect(response.body.rows[0]).toHaveProperty('id_service');
+    //         expect(response.body.rows[0]).toHaveProperty('service_type');
+    //         expect(response.body.rows[0]).toHaveProperty('price');
+
+    //     // deletes the created service so it wont conflit to tests
+    //     const response_del = await request(app)
+    //         .delete(`/service/${response.body.rows[0].id_service}`)
+    // })
+
+    // test('returns error if service is empty', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({});
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if service\'s price is null', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             service_type: 'Biopsy',
+    //             price: undefined
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if service\'s id is null', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             id_service: null,
+    //             service_type: 'Biopsy',
+    //             price: 90
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if a service was already inserted', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             service_type: 'Grooming',
+    //             price: 80
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if id is already in use', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             id_service: 1,
+    //             service_type: 'Biopsy',
+    //             price: 90
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    //         expect(response.body.detail).toEqual('Key (id_service)=(1) already exists.');
+    // })
+
+    // test('returns error if id is not a number', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             id_service: 'a',
+    //             service_type: 'Biopsy',
+    //             price: 90
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if service has more than 50 caracters', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             service_type: 'B'+'iopsy'.repeat(10)
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    // })
+
+    // test('returns error if service doesnt follow regex constraint', async () => {
+    //     const response = await request(app)
+    //         .post('/service')
+    //         .send({
+    //             service_type: 'biopsy',
+    //             price: 90
+    //         });
+
+    //         expect(response.status).toBe(400);
+    //         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    //     })
 })
+
 
 // Tests get by id route for person
 describe('GET /person/:id', () => {
@@ -63,7 +186,6 @@ describe('GET /person/:id', () => {
 
 
 })
-
 
 // Tests get route to return a specific person's pets from database
 describe('GET /person/:id/animal', () => {
@@ -119,7 +241,6 @@ describe('GET /person/:id/animal', () => {
     })
 
 })
-
 
 // Tests to get a specific person's pets schedule from database
 describe('GET /person/:id/scheduleHistory', () => {
@@ -205,4 +326,28 @@ describe('GET /person/:id/schedule', () => {
 // router.get('/person/:id/scheduleHistory', function (req, res) {
 //     Person.getSchedule(req, res, 'history')
 // })
+
+// Tests get route for person
+describe('GET /person', () => {
+    test('returns every person', async () => {
+        const response = await request(app)
+            .get('/person');
+        
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(101);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
+
+// Tests delete route for person
+describe('DELETE /person', () => {
+    test('deletes person 11111111111', async () => {
+        const response = await request(app)
+            .delete('/person/11111111111');
+        
+        expect(response.status).toBe(200);
+        expect(response.body.rows).toHaveLength(1);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+})
 
