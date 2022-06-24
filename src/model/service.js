@@ -55,7 +55,7 @@ class Service {
             if(error) {
                 res.status(400).json(error)
             } else if (!results.rowCount) {
-                res.status(404).json(`There is no service with id  as ${id}`)
+                res.status(404).json(`There is no service with id as ${id}`)
             } else {
                 res.status(200).json(results.rows)
             }
