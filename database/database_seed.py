@@ -320,10 +320,14 @@ def tables_exists(conn:psycopg2.extensions.connection) -> None:
             results = cur.fetchall()
     return len(results) == 5
 
+def set_localtime(conn:psycopg2.extensions.connection) -> None:
+    #  Brazil/East
+    with conn:
+        with conn.cursor() as cur:
+            sql = "SET TIME ZONE 'Brazil/East';"
+            cur.execute(sql)
 
 if __name__ == "__main__":
-    random.seed(42)
-    Faker.seed(42)
 
     # connects to the bd
     attempts = 5
@@ -350,8 +354,16 @@ if __name__ == "__main__":
 
     if tables_exists(conn):
         print('Tables already exists!')
+        set_localtime(conn)
+        conn.close()
         quit()
 
+    # Configure localtime
+    set_localtime(conn)
+
+    random.seed(42)
+    Faker.seed(42)
+    
     # Create tables
     insert_tables(conn)
 
