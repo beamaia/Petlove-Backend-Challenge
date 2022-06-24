@@ -117,6 +117,106 @@ describe('GET /scheduleHistory', () => {
     })
 });    
 
+// Tests patch route for schedule
+describe('PATCH /schedule/:id', () => {
+    test('returns all current schedule', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                date_service: "2025-03-03 13:46"
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(200);
+        expect(response.body[0]).toHaveProperty("id_schedule")
+        expect(response.body[0]).toHaveProperty("id_person")
+        expect(response.body[0]).toHaveProperty("id_animal")
+        expect(response.body[0]).toHaveProperty("id_service")
+        expect(response.body[0]).toHaveProperty("date_service")
+
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to change service', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                id_service: 2
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to change schedule id', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                id_schedule: 2002
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to change animal id', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                id_animal: 151
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to change person', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                id_person: "12345678900"
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error at attempt to change date_service to empty string', async () => {
+        const response = await request(app)
+            .patch('/schedule/202')
+            .send({
+                date_service: ""
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if schedule id has letters', async () => {
+        const response = await request(app)
+            .patch('/schedule/202a')
+            .send({
+                date_service: "2025-03-03 13:47"
+            });
+        
+        
+        // Its not possible to check length since the seed uses the database random
+        expect(response.status).toBe(400);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+});    
+
 // Tests post route for schedule
 describe('DELETE /schedule', () => {
     test('deletes schedule by id', async () => {
