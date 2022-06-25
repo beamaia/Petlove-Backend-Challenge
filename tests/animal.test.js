@@ -238,6 +238,22 @@ describe('POST /animal', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
+    test('returns error if owner\'s cpf is not in the db', async () => {
+        const response = await request(app)
+            .post('/animal')
+            .send({
+                id_person: '93774863050',
+                id_type: 22,
+                name: 'Ginger',
+                date_birth: '2019-08-03'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+            expect(response.body.detail).toEqual('Key (id_person)=(93774863050) is not present in table \"person\".');
+    })
+
     test('returns error if name of animal is not passed', async () => {
         const response = await request(app)
             .post('/animal')
@@ -334,6 +350,106 @@ describe('POST /animal', () => {
     })
 })
 
+// Tests patch route for animal
+describe('PATCH /animal/:id', () => {
+    test('updates an animal', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({
+                name:"blueberry"
+            });
+
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toHaveLength(1);
+
+            expect(response.body[0]).toHaveProperty('name');
+            expect(response.body[0].name).toBe('blueberry');
+    })
+
+    test('return error if tries to change animal id', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({
+                id_animal: 156
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Cannot alter id");
+    })    
+
+    test('return error if date birth doesnt have YYYY-MM-DD format', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({
+                date_birth: "2000/01/20"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid date format");
+    })
+    
+    test('return error if chages date birth so animal is older than 30', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({
+                date_birth: "1980-04-23"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid birth date");
+    })    
+
+    test('returns error if animal is empty', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({});
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if tries to change owner cpf', async () => {
+        const response = await request(app)
+            .patch('/animal/152')
+            .send({
+                id_person: "12345678901"
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Owner cannot be changed");
+    })
+
+    test('returns error if tries to change an animal that doesnt exist', async () => {
+        const response = await request(app)
+            .patch('/animal/0')
+            .send({
+                name: "Ginger"
+            });
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no animal with id as 0");
+
+    })
+
+    test('returns error if animal id is not numeric', async () => {
+        const response = await request(app)
+            .patch('/animal/a')
+            .send({
+                name: 'Ginger'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid Id");
+    })
+})
+
+
 // Tests delete route for animal
 describe('DELETE /animal', () => {
     test('deletes a specific animal', async () => {
@@ -349,7 +465,7 @@ describe('DELETE /animal', () => {
         expect(response.body.rows[0]).toHaveProperty('id_type');
 
         expect(response.body.rows[0].id_person).toBe('93774863057');
-        expect(response.body.rows[0].name).toBe('Blueberry');
+        expect(response.body.rows[0].name).toBe('blueberry');
     })
 
     test('returns error if animal does not exist', async () => {
