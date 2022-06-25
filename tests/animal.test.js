@@ -332,22 +332,6 @@ describe('POST /animal', () => {
             expect(response.body).toEqual("Invalid date format")
 
     })
-
-    test('returns error if animal is older than 30', async () => {
-        const response = await request(app)
-            .post('/animal')
-            .send({
-                id_type: 22,
-                name: 'Ginger',
-                id_person: '28138552030',
-                date_birth: '1980-04-23'
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid birth date")
-
-    })
 })
 
 // Tests patch route for animal
@@ -390,18 +374,6 @@ describe('PATCH /animal/:id', () => {
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
             expect(response.body).toEqual("Invalid date format");
     })
-    
-    test('return error if chages date birth so animal is older than 30', async () => {
-        const response = await request(app)
-            .patch('/animal/152')
-            .send({
-                date_birth: "1980-04-23"
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid birth date");
-    })    
 
     test('returns error if animal is empty', async () => {
         const response = await request(app)
