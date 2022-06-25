@@ -360,6 +360,7 @@ def insert_hard_values(conn:psycopg2.extensions.connection) -> None:
             cur.execute(sql_person)
             cur.execute(sql_animal)
             cur.execute(sql_schedule)
+            conn.commit()
 
 if __name__ == "__main__":
 
