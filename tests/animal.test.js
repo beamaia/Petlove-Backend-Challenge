@@ -57,13 +57,13 @@ describe('GET /animal/:id', () => {
             expect(response.body[0].id_person).toBe('34169696708');
     })
 
-    test('returns empty if animal does not exist', async () => {
+    test('returns error if animal does not exist', async () => {
         const response = await request(app)
             .get('/animal/0');
 
             expect(response.status).toBe(404);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual('Animal not found');
+            expect(response.body).toEqual('There is no animal with id as 0');
     })
 
     test('returns error if id is not a number', async () => {
@@ -76,7 +76,7 @@ describe('GET /animal/:id', () => {
     })
 })
 
-// Tests to get a specific pet's schedule
+// Tests to get a specific pet's schedule history
 describe('GET /animal/:id/scheduleHistory', () => {
     test('returns the scheduled history of a specific pet', async () => {
         const response = await request(app)
@@ -128,6 +128,65 @@ describe('GET /animal/:id/scheduleHistory', () => {
     test('returns empty if pet doesnt have anything scheduled', async () => {
         const response = await request(app)
             .get('/animal/19/scheduleHistory');
+
+            expect(response.status).toBe(200);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual([]);
+    })
+})
+
+// Tests to get a specific pet's future schedule
+describe('GET /animal/:id/schedule', () => {
+    test('returns future schedules of a specific pet', async () => {
+        const response = await request(app)
+            .get('/animal/15/schedule');
+        
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(1);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+
+        // Checks if each element has property schedule #1
+        expect(response.body[0]).toHaveProperty('id_schedule');
+        expect(response.body[0]).toHaveProperty('id_animal');
+        expect(response.body[0]).toHaveProperty('id_person');
+        expect(response.body[0]).toHaveProperty('id_service');
+        expect(response.body[0]).toHaveProperty('date_service');
+
+        // Checks values of the first element
+        expect(response.body[0].id_schedule).toBe(187);
+        expect(response.body[0].id_animal).toBe(15);
+        expect(response.body[0].id_person).toBe('98515543667');
+        expect(response.body[0].id_service).toBe(7);
+        expect(response.body[0].date_service).toBe('2023-03-08T20:00:00.000Z');
+
+        // Checks if person is indeed the pet's owner
+        const response_owner = await request(app)
+            .get('/animal/15');
+
+        expect(response_owner.status).toBe(200);
+        expect(response_owner.body[0].id_person).toBe('98515543667');    
+    })
+
+    test('returns error if animal\'s id is not a number', async () => {
+        const response = await request(app)
+            .get('/animal/a/schedule');
+
+            expect(response.status).toBe(400);
+            expect(response.body).toEqual('Invalid Id');
+    })
+
+    test('returns empty if animal\'s id doesnt exist', async () => {
+        const response = await request(app)
+            .get('/animal/0/schedule');
+
+            expect(response.status).toBe(404);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual('There is no animal with id as 0');
+    })
+
+    test('returns empty if pet doesnt have anything scheduled', async () => {
+        const response = await request(app)
+            .get('/animal/19/schedule');
 
             expect(response.status).toBe(200);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
