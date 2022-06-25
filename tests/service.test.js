@@ -111,7 +111,7 @@ describe('POST /service', () => {
             .post('/service')
             .send({
                 service_type: 'Biopsy',
-                price: undefined
+                price: null
             });
 
             expect(response.status).toBe(400);

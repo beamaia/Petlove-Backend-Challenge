@@ -106,7 +106,7 @@ describe('POST /animalType', () => {
         const response = await request(app)
             .post('/animalType')
             .send({
-                type: undefined
+                type: null
             });
 
             expect(response.status).toBe(400);

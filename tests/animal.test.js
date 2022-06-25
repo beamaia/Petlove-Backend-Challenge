@@ -216,7 +216,7 @@ describe('POST /animal', () => {
         const response = await request(app)
             .post('/animal')
             .send({
-                id_animal: undefined,
+                id_animal: null,
                 name: 'Ginger',
                 id_type: 22,
                 id_person: '28138552030'
@@ -330,6 +330,43 @@ describe('POST /animal', () => {
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
             expect(response.body).toEqual("Invalid birth date")
+
+    })
+})
+
+// Tests delete route for animal
+describe('DELETE /animal', () => {
+    test('deletes a specific animal', async () => {
+        const response = await request(app)
+            .delete('/animal/152');
+        
+        expect(response.status).toBe(200);
+        expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+        expect(response.body.rows[0]).toHaveProperty('id_animal');
+        expect(response.body.rows[0]).toHaveProperty('name');
+        expect(response.body.rows[0]).toHaveProperty('date_birth');
+        expect(response.body.rows[0]).toHaveProperty('id_person');
+        expect(response.body.rows[0]).toHaveProperty('id_type');
+
+        expect(response.body.rows[0].id_person).toBe('93774863057');
+        expect(response.body.rows[0].name).toBe('Blueberry');
+    })
+
+    test('returns error if animal does not exist', async () => {
+        const response = await request(app)
+            .delete('/animal/0');
+
+            expect(response.status).toBe(404);
+            expect(response.body).toEqual("There is no animal with id as 0");
+    })
+
+    test('returns error if id is not a number', async () => {
+        const response = await request(app)
+            .delete('/animal/a');
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.body).toEqual("Invalid Id");
 
     })
 })

@@ -148,7 +148,7 @@ class Animal {
             return res.status(400).json("Invalid Id");
         }
 
-        const sql = `DELETE FROM Animal WHERE id_animal='${id}'`
+        const sql = `DELETE FROM Animal WHERE id_animal='${id}' RETURNING *`
 
         db.query(sql, (error, results) => {
             if(error) {
