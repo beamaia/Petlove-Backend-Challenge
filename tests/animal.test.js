@@ -52,10 +52,10 @@ describe('GET /animal/:id', () => {
             expect(response.body[0]).toHaveProperty('id_type');
             expect(response.body[0]).toHaveProperty('name');
             expect(response.body[0]).toHaveProperty('date_birth');
-            expect(response.body[0].id_type).toBe(39);
+            expect(response.body[0].id_type).toBe(12);
             expect(response.body[0].name).toBe('Fetch');
             expect(response.body[0].id_person).toBe('12345678900');
-            expect(response.body[0].date_birth).toBe('2019-03-12');
+            expect(response.body[0].date_birth).toBe('2019-03-12T03:00:00.000Z');
     })
 
     test('returns error if animal does not exist', async () => {
@@ -99,7 +99,7 @@ describe('GET /animal/:id/scheduleHistory', () => {
         expect(response.body[0].id_animal).toBe(151);
         expect(response.body[0].id_person).toBe('12345678900');
         expect(response.body[0].id_service).toBe(3);
-        expect(response.body[0].date_service).toBe('2023-04-15 13:00');
+        expect(response.body[0].date_service).toBe('2023-04-15T16:00:00.000Z');
 
         // Checks if person is indeed the pet's owner
         const response_owner = await request(app)
@@ -158,7 +158,7 @@ describe('GET /animal/:id/schedule', () => {
         expect(response.body[0].id_animal).toBe(151);
         expect(response.body[0].id_person).toBe('12345678900');
         expect(response.body[0].id_service).toBe(3);
-        expect(response.body[0].date_service).toBe('2023-04-15 13:00');
+        expect(response.body[0].date_service).toBe('2023-04-15T16:00:00.000Z');
 
         // Checks if person is indeed the pet's owner
         const response_owner = await request(app)
@@ -201,113 +201,113 @@ describe('POST /animal', () => {
         const response = await request(app)
             .post('/animal')
             .send({
-                id_person: '11111111111',
-                full_name: 'Mr.Smiley',
-                date_birth: '1999-01-31'
+                id_animal: 152,
+                id_person: '93774863057',
+                id_type: 23,
+                name: 'Blueberry',
+                date_birth: '2013-04-23'
             });
             
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-
-            expect(response.body.rows[0]).toHaveProperty('cpf');
-            expect(response.body.rows[0]).toHaveProperty('full_name');
     })
 
-    test('posts a new person passing empty id', async () => {
+    test('return error if id is null', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
             .send({
-                cpf: '',
-                full_name: 'Mr.Smiley',
-                date_birth: '1999-01-31'
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqaul("Invalid CPF")
-    })
-
-    test('returns error at attempt to post a new person without passing cpf', async () => {
-        const response = await request(app)
-            .post('/person')
-            .send({
-                cpf: '11111111111',
-                date_birth: '1999-01-31'
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-    })
-    
-
-    test('returns error at attempt to post a new person without passing full_name', async () => {
-        const response = await request(app)
-            .post('/person')
-            .send({
-                full_name: 'Mr.Smiley',
-                date_birth: '1999-01-31'
+                id_animal: undefined,
+                name: 'Ginger',
+                id_type: 22,
+                id_person: '28138552030'
             });
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns error if person is empty', async () => {
+    test('returns error if owner\'s cpf is not passed', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
+            .send({
+                id_type: 22,
+                name: 'Ginger',
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if name of animal is not passed', async () => {
+        const response = await request(app)
+            .post('/animal')
+            .send({
+                id_type: 22,
+                id_person: '28138552030'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })    
+
+    test('returns error if id type of animal is not passed', async () => {
+        const response = await request(app)
+            .post('/animal')
+            .send({
+                name: 'Ginger',
+                id_person: '28138552030'
+            });
+
+            expect(response.status).toBe(400);
+            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
+    })
+
+    test('returns error if animal is empty', async () => {
+        const response = await request(app)
+            .post('/animal')
             .send({});
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-    test('returns error if a person was already inserted', async () => {
+    test('returns error if id was already inserted', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
             .send({
-                cpf: '11111111111',
-                full_name: 'Mr.Smiley',
+                id_animal: 3,
+                id_type: 22,
+                name: 'Ginger',
+                id_person: '28138552030'
             });
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
     })
 
-
-    test('returns error if cpf is not a number', async () => {
+    test('returns error if id is not a number', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
             .send({
-                cpf: '1111111111a',
-                full_name: 'Mr.Smiley',
+                id_animal: 'a',
+                id_type: 22,
+                name: 'Ginger',
+                id_person: '28138552030'
             });
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid CPF")
-
-    })
-
-    test('returns error if cpf doesnt have 11 digits', async () => {
-        const response = await request(app)
-            .post('/person')
-            .send({
-                cpf: '1111111111',
-                full_name: 'Mr.Smiley',
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid CPF")
+            expect(response.body).toEqual("Invalid Id")
 
     })
 
     test('returns error if date_birth doesnt have YYYY-MM-DD format', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
             .send({
-                cpf: '11111111113',
-                full_name: 'Mr.Smiley',
+                id_type: 22,
+                name: 'Ginger',
+                id_person: '28138552030',
                 date_birth:"2000/01/20"
             });
 
@@ -317,48 +317,19 @@ describe('POST /animal', () => {
 
     })
 
-    test('returns error if person is younger than 18', async () => {
+    test('returns error if animal is older than 30', async () => {
         const response = await request(app)
-            .post('/person')
+            .post('/animal')
             .send({
-                cpf: '11111111112',
-                full_name: 'Mr.Smiley',
-                date_birth:"2008-01-20"
+                id_type: 22,
+                name: 'Ginger',
+                id_person: '28138552030',
+                date_birth: '1980-04-23'
             });
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
             expect(response.body).toEqual("Invalid birth date")
-
-    })
-
-    test('returns error if person is older than 140', async () => {
-        const response = await request(app)
-            .post('/person')
-            .send({
-                cpf: '11111111112',
-                full_name: 'Mr.Smiley',
-                date_birth:"1808-01-20"
-            });
-
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid birth date")
-
-    })
-
-    test('returns error if postal code has more than 9 characters', async () => {
-        const response = await request(app)
-            .post('/person')
-            .send({
-                cpf: '11111111112',
-                full_name: 'Mr.Smiley',
-                postal_code: "320935803989"
-            });
-            
-            expect(response.status).toBe(400);
-            expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid postal code")
 
     })
 })
