@@ -68,7 +68,6 @@ describe('POST /service', () => {
                 price: 350
             });
 
-            console.log(response.body);
             expect(response.status).toBe(201);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
 
