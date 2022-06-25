@@ -29,9 +29,7 @@ class Animal {
                 }
             } 
             if (key == 'date_birth') {
-                if (data.date_birth && aux.getAge(data.date_birth) > 30) {
-                    return res.status(400).json("Invalid birth date")
-                } else if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
+                if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
                     return res.status(400).json("Invalid date format")
                 }
             }
@@ -110,9 +108,7 @@ class Animal {
                 return res.status(400).json('Owner cannot be changed')
             } 
             if (key == 'date_birth') {
-                if (data.date_birth && aux.getAge(data.date_birth) > 30) {
-                    return res.status(400).json("Invalid birth date")
-                } else if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
+                if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
                     return res.status(400).json("Invalid date format")
                 }
             } 
