@@ -1,0 +1,46 @@
+{
+  "name": "petlove-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "jest --verbose  --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UFES20221BDCOMP/T1-Beatriz-Sophie.git"
+  },
+  "keywords": [
+    "petlove",
+    "api",
+    "backend"
+  ],
+  "contributors": [
+    {
+      "name": "Beatriz Maia",
+      "email": "beatriz.maia@edu.ufes.br"
+    },
+    {
+      "name": "Sophie Dilhon",
+      "email": "sophie.gama@edu.ufes.br"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UFES20221BDCOMP/T1-Beatriz-Sophie/issues"
+  },
+  "homepage": "https://github.com/UFES20221BDCOMP/T1-Beatriz-Sophie#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "moment": "^2.29.3",
+    "nodemon": "^1.3.3",
+    "pg": "^8.7.3",
+    "supertest": "^6.2.3"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "jest": "^28.1.1"
+  }
+}
