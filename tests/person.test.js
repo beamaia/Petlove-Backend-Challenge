@@ -23,7 +23,7 @@ describe('POST /person', () => {
             expect(response.body.rows[0]).toHaveProperty('full_name');
     })
 
-    test('posts a new person passing empty id', async () => {
+    test('returns error at attempt of posting a new person passing empty id', async () => {
         const response = await request(app)
             .post('/person')
             .send({
@@ -34,7 +34,7 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqaul("Invalid CPF")
+            expect(response.body).toEqual("Invalid CPF")
     })
 
     test('returns error at attempt to post a new person without passing cpf', async () => {
@@ -138,7 +138,7 @@ describe('POST /person', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual("Invalid birth date"))
+            expect(response.body).toEqual("Invalid birth date")
 
     })
 
@@ -192,7 +192,7 @@ describe('GET /person/:id', () => {
             expect(response.body[0]).toHaveProperty('phone');
             expect(response.body[0].cpf).toBe('25631219101');
             expect(response.body[0].full_name).toBe('Antônio Freitas');
-            expect(response.body[0].date_birth).toContain('1993-07-03');
+            expect(response.body[0].date_birth).toContain('1993-07-04');
             expect(response.body[0].number).toBe(990);
             expect(response.body[0].road).toBe('Alameda Favela Dias');
             expect(response.body[0].city).toBe('Viana');
@@ -316,8 +316,8 @@ describe('GET /person/:id/scheduleHistory', () => {
         const response = await request(app)
             .get('/person/11111111111/scheduleHistory');
 
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual("The person with cpf as 11111111111 has no pet");
     })
 })
 
@@ -351,8 +351,8 @@ describe('GET /person/:id/schedule', () => {
         const response = await request(app)
             .get('/person/28138552030/schedule');
             
-            expect(response.status).toBe(204);
-            expect(response.body).toEqual({});
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual("The person with cpf as 28138552030 has no pet");
     })
 })
 
@@ -392,8 +392,6 @@ describe('PATCH /person/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual({});
-
     })
 
     test('returns error at attempt of changing cpf', async () => {
@@ -405,7 +403,7 @@ describe('PATCH /person/:id', () => {
 
             expect(response.status).toBe(400);
             expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.body).toEqual();
+            expect(response.body).toEqual("CPF cannot be changed");
 
     })
 
@@ -442,20 +440,18 @@ describe('DELETE /person', () => {
             .delete('/person/11111111111');
         
         expect(response.status).toBe(200);
-        expect(response.body.rows).toHaveLength(1);
         expect(response.header['content-type']).toBe('application/json; charset=utf-8');
-        expect(response.body).toHaveLength(1);
-        expect(response.body[0]).toHaveProperty('cpf');
-        expect(response.body[0]).toHaveProperty('full_name');
-        expect(response.body[0]).toHaveProperty('date_birth');
-        expect(response.body[0]).toHaveProperty('number');
-        expect(response.body[0]).toHaveProperty('road');
-        expect(response.body[0]).toHaveProperty('city');
-        expect(response.body[0]).toHaveProperty('postal_code');
-        expect(response.body[0]).toHaveProperty('phone');
-        expect(response.body[0].cpf).toBe('11111111111');
-        expect(response.body[0].full_name).toBe('Mr.Smiley');
-        expect(response.body[0].date_birth).toContain('1999-01-31');
+        expect(response.body.rows[0]).toHaveProperty('cpf');
+        expect(response.body.rows[0]).toHaveProperty('full_name');
+        expect(response.body.rows[0]).toHaveProperty('date_birth');
+        expect(response.body.rows[0]).toHaveProperty('number');
+        expect(response.body.rows[0]).toHaveProperty('road');
+        expect(response.body.rows[0]).toHaveProperty('city');
+        expect(response.body.rows[0]).toHaveProperty('postal_code');
+        expect(response.body.rows[0]).toHaveProperty('phone');
+        expect(response.body.rows[0].cpf).toBe('11111111111');
+        expect(response.body.rows[0].full_name).toBe('Mr.Smiley');
+        expect(response.body.rows[0].date_birth).toContain('1999-01-31');
     })
 
     test('returns error if person does not exist', async () => {

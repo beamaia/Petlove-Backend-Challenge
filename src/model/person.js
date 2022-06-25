@@ -111,7 +111,7 @@ class Person {
                     if(error) {
                         return res.status(400).json(error);
                     } else if (!results.rowCount) {
-                        return res.status(204).json(`The person with cpf as ${id} has no pet`);
+                        return res.status(200).json(`The person with cpf as ${id} has no pet`);
                     } else {
                         // Finally, search for schedule
                         if (date == 'future') {
@@ -127,7 +127,7 @@ class Person {
                             if(error) {
                                 return res.status(400).json(error);
                             } else if (!results.rowCount) {
-                                return res.status(204).json(`The person with cpf as ${id} has no ${date} schedule`);
+                                return res.status(200).json(`The person with cpf as ${id} has no ${date} schedule`);
                             } else {
                                 return res.status(200).json(results.rows);
                             }
