@@ -6,17 +6,18 @@ Project 1 for the class of Database I, based on the [Petlove backend challenge](
 ### Scenario: You need to project an application for managing animals.
 - People have animals and animals have type.
 - A person has the following attributes: name, ID (CPF), date of birth, address with number, street, city and postal code, and phone number.
-- An animal has the following attributes: name, owner, type, date of birth, unique ID.
+- An animal has the following attributes: name, owner, species (animal type), date of birth, unique ID.
 - A type of animal has the following attribute: name and unique ID
-- Pessoas tem animais, e animais tem tipos.
 - A service has the following attributes: name and unique ID.
 - A schedule has the following attributes: animal, owner, type of service and unique ID.
 
 ### Rules
 - A person could have multiple animals.
 - Animals can only have one owner.
-- CPFs cannot be repeated.
+- CPFs are unique identifiers.
 - A time slot can only be occupied once.
+- A service and an animal type name must follow the regex '[A-Z] + [a-z ]*'.
+- Dates must be as YYYY-MM-DDD, and in case it is a schedule, it must also have the time slot H:M.
 
 ## ⚙️ Configuring environment
 
@@ -36,11 +37,11 @@ It's important that you run this command inside the project's repository.
 
 ## 📊 Conceptual model
 
-The problem was conceptualized with 3 main entities that interect and have relationship with eachother. The image down below represents the initial concept.
+The problem was conceptualized with 3 entities that have relationship with eachother. The image down below represents the initial concept.
 
 ![Conceptual model](docs/conceptual_mode.png)
 
-With that, it was created 5 tables: Person, Animal, Schedule, AnimalType and ServiceType.
+With that, 5 tables were created: Person, Animal, Schedule, AnimalType and ServiceType.
 
 ![Table models](docs/model.png)
 

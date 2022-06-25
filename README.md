@@ -6,7 +6,7 @@ Trabalho 1 para a disciplina Banco de Dados I, com base no [desafio de backend d
 ### Cenário: Você precisa escrever uma aplicação para gestão de animais.
 - Pessoas tem animais, e animais tem tipos.
 - Uma pessoa tem os atributos nome, documento (CPF), data de nascimento, endereço com número, rua, cidade e CEP e telefone.
-- Um animal tem os atributos nome, dono, espécie, data de nascimento e ID único.
+- Um animal tem os atributos nome, dono, espécie (tipo do animal), data de nascimento e ID único.
 - Um tipo de animal tem os atributo nome e ID único.
 - Um tipo de serviço tem os atributo nome e ID único.
 - Um agendamento tem os atributos animal, dono, tipo de serviço, horário e ID único.
