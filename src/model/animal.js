@@ -1,5 +1,6 @@
 const db = require('../database/db');
 const aux = require('../utils/utils');
+const moment = require('moment')
 
 class Animal {
 
@@ -27,6 +28,17 @@ class Animal {
                     return res.status(400).json("Invalid CPF")
                 }
             } 
+            if (key == 'date_birth') {
+                if (data.date_birth && aux.getAge(data.date_birth) > 30) {
+                    return res.status(400).json("Invalid birth date")
+                } else if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
+                    return res.status(400).json("Invalid date format")
+                }
+            }
+            
+            if (key == 'id_animal' && isNaN(data[key])) {
+                return res.status(400).json("Invalid Id");
+            }
 
             fields_atr.push(key)
 
@@ -96,6 +108,12 @@ class Animal {
         for (let key in data) {
             if (key == 'id_person') {
                 return res.status(400).json('Owner cannot be changed')
+            } else if (key == 'date_birth') {
+                if (data.date_birth && aux.getAge(data.date_birth) > 30) {
+                    return res.status(400).json("Invalid birth date")
+                } else if (data.date_birth && !moment(data.date_birth, "YYYY-MM-DD", true).isValid()) {
+                    return res.status(400).json("Invalid date format")
+                }
             } else {
                 if (data[key]) {
                     fields.push(`${key}='${data[key]}'`)
